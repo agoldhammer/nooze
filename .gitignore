@@ -17,3 +17,7 @@ newsfrt/resources/public/js/compiled/json
 Dockerfile1
 newsapp.old
 nzdb.egg-info/
+app/static/*.png
+app/static/*.ico
+app/static/
+newsfrt/resources/public/vendor/

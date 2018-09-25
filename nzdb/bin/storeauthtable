@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import os
-from twdb2.configurator import twdbConfig
-from twdb2.dbif import mapAuthorToLang, getAuthors, storeAuthor
+from nzdb.configurator import nzdbConfig
+from nzdb.dbif import mapAuthorToLang, getAuthors, storeAuthor
 
 
 def main():
-    authfile = twdbConfig['authfile']
+    authfile = nzdbConfig['authfile']
     authfile = os.path.expanduser(authfile)
     with open(authfile) as lines:
         for line in lines:

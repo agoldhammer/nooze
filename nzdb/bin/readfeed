@@ -6,18 +6,18 @@ from time import sleep
 import click
 import logging
 from logging import FileHandler
-from twdb2.twauthenticate import getTwitterApi
-from twdb2.configurator import twdbConfig
-from twdb2.dbif import (storeStatus, DuplicateStatus,
+from nzdb.nzauth import getTwitterApi
+from nzdb.configurator import nzdbConfig
+from nzdb.dbif import (storeStatus, DuplicateStatus,
                         get_lastread, store_lastread,
                         mapAuthorToLang, AuthorNotFound)
-from twdb2.prettytext import printStatus
+from nzdb.prettytext import printStatus
 from tweepy import Cursor
 
-LOGFILENAME = twdbConfig['logfile']
-LOGNAME = twdbConfig['logname']
-OWNER = twdbConfig['owner']
-SLUG = twdbConfig['slug']
+LOGFILENAME = nzdbConfig['logfile']
+LOGNAME = nzdbConfig['logname']
+OWNER = nzdbConfig['owner']
+SLUG = nzdbConfig['slug']
 
 processed = 0
 added = 0
@@ -103,7 +103,7 @@ def main(quiet, daemon, sleeptime):
 
 
 if __name__ == "__main__":
-    # print("Processing usnews feeds for twdb2")
+    # print("Processing usnews feeds for nzdb")
     logger = logging.getLogger(LOGNAME)
     logger.setLevel(logging.INFO)
     fh = FileHandler(LOGFILENAME)

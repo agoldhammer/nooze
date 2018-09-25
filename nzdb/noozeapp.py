@@ -8,8 +8,9 @@ from flask import (Flask, request, render_template, redirect,
 from flask_bootstrap import Bootstrap
 from flask_script import Manager
 
-from twdb2.dbif import websearch, getTopics, getCount, fetch_recent
-from twdb2.dupdetect import dedupe
+from nzdb.dbif import websearch, getTopics, getCount, fetch_recent
+from nzdb.dupdetect import dedupe
+from nzdb.configurator import nzdbConfig
 
 
 class WebQueryParseException(Exception):
@@ -24,9 +25,12 @@ SECRET_KEY = 'ag3rf8-(cnc&my7&)a2(!v*mj9*7v#3cgix@=&5&qam&57n7&o0=$'
 USERNAME = 'admin'
 PASSWORD = 'default'
 
-
-app = Flask(__name__)
-app.config.from_object(__name__)
+templates = nzdbConfig['templates']
+static = nzdbConfig['static']
+app = Flask(__name__,
+            template_folder=templates,
+            static_folder=static)
+# app.config.from_object(__name__)
 
 manager = Manager(app)
 bootstrap = Bootstrap(app)
@@ -42,14 +46,14 @@ def getStats():
     size = getCount()
     topics = list(getTopics())
     topics = sorted(topics, key=lambda topic: topic["cat"])
-    for topic in topics:
-        # TODO: fix this, looking back only 1 week but comparing to all time
-        query = "-d 7 " + topic["query"]
-        err, cursor = websearch(query)
-        if not err:
-            n = cursor.count()
-            topic["count"] = n
-            topic["percent"] = "{:.2%}".format(1.0 * n / size)
+    # for topic in topics:
+    #     # TODO: fix this, looking back only 1 week but comparing to all time
+    #     query = "-d 7 " + topic["query"]
+    #     err, cursor = websearch(query)
+    #     if not err:
+    #         n = cursor.estimated_document_count()
+    #         topic["count"] = n
+    #         topic["percent"] = "{:.2%}".format(1.0 * n / size)
     groups = groupby(topics, key=lambda topic: topic["cat"])
     temp = defaultdict(list)
     for cat, group in groups:

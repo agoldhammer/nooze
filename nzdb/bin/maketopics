@@ -8,8 +8,8 @@ import os
 import sys
 
 from collections import namedtuple
-from twdb2.configurator import twdbConfig
-from twdb2.dbif import getTopics, storeTopic, cleanTopicsCollection
+from nzdb.configurator import nzdbConfig
+from nzdb.dbif import getTopics, storeTopic, cleanTopicsCollection
 
 """
 Builds database from topics.txt
@@ -32,7 +32,7 @@ def display_all():
 
 
 def main():
-    fname = twdbConfig['topicsfile']
+    fname = nzdbConfig['topicsfile']
     fname = os.path.expanduser(fname)
     # clean topics collection before updating
     cleanTopicsCollection()

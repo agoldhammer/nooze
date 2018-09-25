@@ -1,0 +1,5 @@
+fonts in header
+help button
+tests
+humanize the error messages
+filter on authors?

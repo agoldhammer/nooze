@@ -1,0 +1,262 @@
+.main-head {
+  grid-area: header;
+}
+.content {
+  grid-area: content;
+}
+.main-nav {
+  grid-area: nav;
+}
+.side {
+  grid-area: sidebar;
+}
+.ad {
+  grid-area: ad;
+}
+.main-footer {
+  grid-area: footer;
+}
+
+.left-gutter, right-gutter {
+    grid-area: gutter;
+}
+
+.cat-btn {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 5px;
+    margin-left: 1px;
+    margin-top: 2px;
+    width: 90%;
+    color: fuchsia;
+}
+
+.recent-btn {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 5px;
+    margin-left: 1px;
+    margin-top: 2px;
+    width: 90%;
+    background-color: rgb(63, 121, 158);
+    color: white;
+}
+
+.topic-btn {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 70%;
+    margin: 2px;
+    font-size: 80%;
+}
+
+.cat-btn:hover, .topic-btn:hover {
+    background-color: yellow;
+}
+
+.recent-btn:hover {
+    background-color: red;
+}
+
+.time-btn {
+    width: 5%;
+    background-color: white;
+    color: black;
+    font-size: 10px;
+}
+
+.time-btn-active {
+    background-color: lightblue;
+}
+
+.wrapper {
+  display: grid;
+  grid-gap: 5px;
+  grid-template-areas:
+    "header"
+    "nav"
+    "content"
+    "sidebar"
+    "ad"
+    "footer";
+}
+
+@media (min-width: 500px) {
+  .wrapper {
+    grid-template-columns: 1fr 3fr;
+    grid-template-areas:
+      "header  header"
+      "nav     nav"
+      "sidebar content"
+      "ad      footer";
+  }
+  nav ul {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 700px) {
+  .wrapper {
+    grid-template-columns: 1fr 6fr 2fr;
+    grid-template-areas:
+      "header header  header"
+      "nav    content sidebar"
+      "nav    content ad"
+      "footer footer  footer"
+   }
+   nav ul {
+     flex-direction: column;
+   }
+   content ul {
+       flex-direction: column;
+   }
+}
+
+body {
+    # background-color: rgba(255, 255, 255, 0.5);
+    # background-image: url("nytimes.gif");
+    # background-blend-mode: lighten;
+    background-color: lightgray;
+}
+
+/* .header { */
+/*     height: 10vh; */
+/*     background-color: lightyellow; */
+/* } */
+
+/* @media (min-width: 700px) { */
+/*     .content { */
+/*	display: grid; */
+/*	grid-gap: 5px; */
+/*	grid-template-columns: 1fr 1fr; */
+/*	grid-template-areas: */
+/*	"article article" */
+/*     } */
+/* } */
+
+.content {
+    height: 75vh;
+    margin: 0px;
+    padding: 0px;
+    overflow: auto;
+    font-family: Verdana;
+    background-color: lightgray;
+}
+
+.query {
+    max-width: 400px;
+}
+
+.ad {
+    height: 30vh;
+    overflow: auto;
+    background-color: papayawhip;
+}
+
+.side {
+    height: 45vh;
+    padding: 4px;
+    overflow: auto;
+    color: white;
+    background-color: brown;
+}
+
+.main-head {
+    display: flex;
+    flex-direction: column;
+    height: 110px;
+    padding: 5px;
+    color: white;
+    background-color: teal;
+}
+
+.main-head p, span {
+    padding-left: 20px;
+}
+
+.custom-query {
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.custom-query span {
+    padding-top: 8px;
+    padding-right: 4px;
+    margin-right: 3px;
+}
+
+.datepicker {
+    margin-left: 10px;
+}
+
+.alert-box {
+    width: 40%;
+}
+
+.button-bar {
+    padding-left: 10px;
+}
+
+.main-head span {
+    font-size: 80%;
+}
+
+.main-nav {
+    height: 75vh;
+    overflow: auto;
+    background-color: lightcyan;
+}
+
+.main-footer {
+    height: 5vh;
+    background-color: powderblue;
+}
+
+/* .left-nav { */
+/*     list-style-type: none; */
+/* } */
+
+.article {
+    display: flex;
+    flex-direction: column;
+    max-width: 350px;
+    padding-left: 10px;
+    margin: 5px;
+    border: 2px solid lightgray;
+    border-radius: 10px;
+    background-color: lightgray;
+}
+
+.art-header {
+    /* border-left: 2px solid lightblue; */
+    background-color: rgb(230,246,247);
+    font-size: 80%;
+    text-align: left;
+    vertical-align: bottom;
+    color: rgb(140,1,15);
+    margin: 0px;
+    border-radius: 10px;
+    /* border-bottom: none; */
+    padding: 3px;
+}
+
+.art-content {
+    /* border: 2px solid lightblue; */
+    font-style: 900;
+    min-height: 80%;
+    background-color: white;
+    /* border-top: none; */
+    border-radius: 10px;
+    padding: 3px;
+    margin: 0px;
+    font-size: 120%;
+}
+
+.art-content a {
+    color: red;
+}
+
+.art-content a:visited {
+    color: green;
+}

@@ -1,0 +1,1 @@
+(ns newsfrt.core)

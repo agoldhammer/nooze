@@ -196,7 +196,7 @@ def handleQuery(query):
     cursors = []
     for subquery in queries:
         err, cursor = websearch(subquery)
-        if not err and cursor.count() > 0:
+        if not err:
             cursors.append(cursor)
         elif err:
             flash("Error in query, try again! " + str(err))

@@ -124,7 +124,7 @@ def getCount():
     :return: count
     :rtype: int
     """
-    return twitterdb.statuses.count()
+    return twitterdb.statuses.estimated_document_count()
 
 
 def getTopics():

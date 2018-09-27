@@ -30,7 +30,7 @@ static = nzdbConfig['static']
 app = Flask(__name__,
             template_folder=templates,
             static_folder=static)
-# app.config.from_object(__name__)
+app.config.from_object(__name__)
 
 manager = Manager(app)
 bootstrap = Bootstrap(app)

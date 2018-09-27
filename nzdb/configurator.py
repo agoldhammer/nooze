@@ -22,7 +22,7 @@ def expand(path):
 config_file = os.getenv("NZDBCONF")
 if config_file:
     config_file = expand(config_file)
-    read = config.read(os.path.expanduser(config_file))
+    read = config.read(config_file)
     if len(read) == 0:
         print(f'Configuration file {config_file} not found')
 else:

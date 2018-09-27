@@ -10,19 +10,24 @@ import sys
 
 config = configparser.ConfigParser()
 
-nzdbConfig = {}
 
-# must set environment variable NZDBCONF to path of config file
-config_file = os.getenv("NZDBCONF")
-if config_file:
-    config.read(os.path.expanduser(config_file))
-else:
-    print("Config error: env var NZDBCONF not set")
-    sys.exit(255)
+nzdbConfig = {}
 
 
 def expand(path):
     return os.path.expanduser(path)
+
+
+# must set environment variable NZDBCONF to path of config file
+config_file = os.getenv("NZDBCONF")
+if config_file:
+    config_file = expand(config_file)
+    read = config.read(os.path.expanduser(config_file))
+    if len(read) == 0:
+        print(f'Configuration file {config_file} not found')
+else:
+    print("Config error: env var NZDBCONF not set")
+    sys.exit(255)
 
 
 nzdbConfig['OAUTH_TOKEN'] = config.get('authentication', 'OAUTH_TOKEN')

@@ -1,4 +1,4 @@
-from nzdb import noozeapp
+from nzdb.noozeapp import app
 
 if __name__ == '__main__':
-    noozeapp.run()
+    app.run()

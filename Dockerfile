@@ -13,20 +13,25 @@ RUN touch /var/log/nooze/nooze.log
 
 RUN mkdir -p /var/log/uwsgi
 RUN touch /var/log/uwsgi/uwsgi.log
+RUN mkdir /app
 
-COPY . nooze/
-
+# install the standing requirements
+COPY requirements.txt nooze/
 RUN pip3 install --upgrade pip
-# RUN pip3 install nooze/tweepy-3.6.0a0.tar.gz
-# 
 RUN pip3 install -r nooze/requirements.txt
-# 
+
+COPY app/ /app/
+# RUN ls -laR /app
+
+# install the app environment
+COPY nzdb/ /nooze/nzdb/
+# RUN ls -laR /nooze
+COPY setup.py nooze/
 WORKDIR nooze
 RUN python3 setup.py install
 
 # 
-WORKDIR /
-RUN cp -r /nooze/app/ /
+# RUN cp -r /nooze/app/ /
 # config files should be placed in $HOME/confs dir on host
 # RUN cp -r /nooze/confs /app
 
@@ -34,7 +39,7 @@ RUN cp -r /nooze/app/ /
 RUN mkdir -p /etc/supervisor.d
 RUN ln -s /app/supervisor.ini /etc/supervisor.d/
 # 
-# RUN rm -rf nooze
+RUN rm -rf /nooze
 
 # CMD tail -f /dev/null
 WORKDIR /app

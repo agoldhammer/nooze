@@ -20,29 +20,27 @@ COPY requirements.txt nooze/
 RUN pip3 install --upgrade pip
 RUN pip3 install -r nooze/requirements.txt
 
-COPY app/ /app/
-# RUN ls -laR /app
-
 # install the app environment
 COPY nzdb/ /nooze/nzdb/
 # RUN ls -laR /nooze
 COPY setup.py nooze/
 WORKDIR nooze
 RUN python3 setup.py install
-
-# 
-# RUN cp -r /nooze/app/ /
-# config files should be placed in $HOME/confs dir on host
-# RUN cp -r /nooze/confs /app
-
+RUN rm -rf /nooze
 # 
 RUN mkdir -p /etc/supervisor.d
 RUN ln -s /app/supervisor.ini /etc/supervisor.d/
 # 
-RUN rm -rf /nooze
 
 # CMD tail -f /dev/null
+COPY app/ /app/
 WORKDIR /app
+RUN cp /app/logging/*conf /etc/logrotate.d
+RUN chmod 644 /etc/logrotate.d/*.conf
+# RUN chown root:root /etc/logrotate.d/*conf
+RUN chmod 755 /var/log/uwsgi
+RUN chmod 755 /var/log/nooze
+
 CMD ["supervisord", "-n"]
 
 

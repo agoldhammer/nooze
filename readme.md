@@ -12,13 +12,13 @@ Currently using mongo 4.0.2-xenial image.
 
 ## Middleware
 
-The frontend consists of the Python app newsapp, which can be configured to work with different databases in the backend and to consume different Twitter lists. See [Configuration](#configuration).
+The frontend consists of the Python app nooze, which can be configured to work with different databases in the backend and to consume different Twitter lists. See [Configuration](#configuration).
 
-Newsapp is built on top of ```twdb2```, which handles all interfacing with the database. Newsapp is a Web service based on Flask.
+Nooze is built on top of ```twdb2```, which handles all interfacing with the database. Nooze is a Web service based on Flask.
 
 ### Application details
 
-`twdb2` installs several scripts used by newsapp.
+`nzdb` installs several scripts used by nooze.
 
 `readfeed` processes the Twitter list feed specified in the configuration file.
 
@@ -37,7 +37,7 @@ of the containers.
 
 #### Configuration
 
-Congiuration files *must* be located in the `app/confs` directory of `newsappp`.
+Congiuration files *must* be located in the `app/confs` directory of `noozep`.
 
 Here is a sample docker-compose config file:
 
@@ -117,15 +117,7 @@ slug=mylistname
 #### replacing container on website
 
 ```
-buntu@ip-172-31-42-130:~$ NZTAG=0922 docker-compose -f cloud-multi.yaml down
-Stopping usnews ... done
-Stopping eunews ... done
-Stopping dbhost ... done
-Removing usnews ... done
-Removing eunews ... done
-Removing dbhost ... done
-Removing network ubuntu_default
-ubuntu@ip-172-31-42-130:~$ NEWSTAG=0923 docker-compose -f cloud-multi.yaml up -d
+ubuntu@ip-172-31-42-130:~$ NZTAG=0923 docker-compose -f cloud-multi.yaml up -d
 Creating network "ubuntu_default" with the default driver
 Creating dbhost ... done
 Creating usnews ... done

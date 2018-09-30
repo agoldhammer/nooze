@@ -106,12 +106,16 @@ authfile=/app/confs/myauthors.txt
 topicsfile=/app/confs/mytopics.txt
 
 [logging]
-logfile=/var/log/twdb2/myapp.log
-logname=myapp
+logfile=/var/log/nooze/nooze.log
+logname=nooze
 
 [twitter]
 owner=mytwitterhandle
 slug=mylistname
+
+[app]
+template-dir=/app/templates
+static-dir=/app/static
 ```
 
 #### replacing container on website

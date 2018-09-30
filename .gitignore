@@ -21,3 +21,12 @@ app/static/*.png
 app/static/*.ico
 app/static/
 newsfrt/resources/public/vendor/
+.dockerignore
+Dockerfile.working
+tweepy-3.6.0a0.tar.gz
+confs/
+newsfrt/resources/public/json/
+newsfrt/target/
+nzdb/bin/activate
+nzdb/bin/conda
+nzdb/bin/deactivate

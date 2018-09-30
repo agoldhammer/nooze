@@ -40,7 +40,9 @@ RUN chmod 644 /etc/logrotate.d/*.conf
 # RUN chown root:root /etc/logrotate.d/*conf
 RUN chmod 755 /var/log/uwsgi
 RUN chmod 755 /var/log/nooze
-
+# the following line is necessary to make logrotate run w/o hiccup
+RUN touch /var/log/messages
+#
 CMD ["supervisord", "-n"]
 
 

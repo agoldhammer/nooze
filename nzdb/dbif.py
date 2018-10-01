@@ -34,29 +34,31 @@ class TopicNotFound(Exception):
     pass
 
 
-class Status(object):
-    """docstring for Status
-    Object to represent a pruned Twitter status
-    ======
-    """
-    def __init__(self, statusid):
-        """
-        :param statusid: statusid in db
-        instantiates class representing the statusid
-        """
-        super(Status, self).__init__()
-        status = mapStatusIDtoStatus(statusid)
-        assert(status is not None)
-        self.text = status["text"]
-        self.created_at = status["created_at"]
-        self.source = status["source"]
-        self.author = status["author"]
+# NO LONGER NEEDED
 
-    def __str__(self):
-        s1 = "<{}> [{}]\n".format(self.author, self.created_at)
-        s2 = "{}".format(self.text)
-        s2 = wrapper.fill(s2)
-        return s1 + s2
+# class Status(object):
+#     """docstring for Status
+#     Object to represent a pruned Twitter status
+#     ======
+#     """
+#     def __init__(self, statusid):
+#         """
+#         :param statusid: statusid in db
+#         instantiates class representing the statusid
+#         """
+#         super(Status, self).__init__()
+#         status = mapStatusIDtoStatus(statusid)
+#         assert(status is not None)
+#         self.text = status["text"]
+#         self.created_at = status["created_at"]
+#         self.source = status["source"]
+#         self.author = status["author"]
+
+#     def __str__(self):
+#         s1 = "<{}> [{}]\n".format(self.author, self.created_at)
+#         s2 = "{}".format(self.text)
+#         s2 = wrapper.fill(s2)
+#         return s1 + s2
 
 
 # db abstraction section
@@ -74,22 +76,22 @@ def get_status_date_range():
     return mindate[0]["created_at"], maxdate[0]["created_at"]
 
 
-def mapStatusIDtoStatusField(statusid, field):
-    """
-    :param str statusid: id of status to decode
-    :param str field: name of field to decode
-    :return: status
-    :rtype: dict
-    """
-    assert(field in ["author", "text", "created_at", "source"])
-    status = twitterdb.statuses.find_one({"id": statusid})
-    if status is None:
-        raise StatusNotFound(statusid)
-    return status[field]
+# def mapStatusIDtoStatusField(statusid, field):
+#     """
+#     :param str statusid: id of status to decode
+#     :param str field: name of field to decode
+#     :return: status
+#     :rtype: dict
+#     """
+#     assert(field in ["author", "text", "created_at", "source"])
+#     status = twitterdb.statuses.find_one({"id": statusid})
+#     if status is None:
+#         raise StatusNotFound(statusid)
+#     return status[field]
 
 
-def mapStatusIDtoStatusClass(status_id):
-    return Status(status_id)
+# def mapStatusIDtoStatusClass(status_id):
+#     return Status(status_id)
 
 
 def mapStatusIDtoStatus(status_id):
@@ -174,13 +176,13 @@ def storeStatus(status):
         raise DuplicateStatus(status)
 
 
-def storeTopicID(topic, id, lang):
-    twitterdb.topids.insert({"topic": topic, "id": id, "lang": lang})
+# def storeTopicID(topic, id, lang):
+#     twitterdb.topids.insert({"topic": topic, "id": id, "lang": lang})
 
 
-def clean_topids():
-    """drop all docs in topids"""
-    twitterdb.topids.delete_many({})
+# def clean_topids():
+#     """drop all docs in topids"""
+#     twitterdb.topids.delete_many({})
 
 
 def sid_to_topics(sid, lang):
@@ -374,9 +376,3 @@ if __name__ == '__main__':
     err, cursor = esearch(sc)
     for s in cursor:
         print(s)
-    # store_lastread(950956175293669376)
-    # _id, maxid = get_lastread()
-    # print(_id, maxid)
-#     cursor = search("Democratic")
-#     for s in cursor:
-#         print(s)

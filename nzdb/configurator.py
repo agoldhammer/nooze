@@ -20,13 +20,17 @@ def expand(path):
 
 # must set environment variable NZDBCONF to path of config file
 config_file = os.getenv("NZDBCONF")
+errmsg = f'Configuration file {config_file} not found; check env var NZDBCONF'
 if config_file:
     config_file = expand(config_file)
+    if not os.path.isfile(config_file):
+        print(errmsg)
+        sys.exit(255)
     read = config.read(config_file)
     if len(read) == 0:
-        print(f'Configuration file {config_file} not found')
+        print(errmsg)
 else:
-    print("Config error: env var NZDBCONF not set")
+    print(errmsg)
     sys.exit(255)
 
 

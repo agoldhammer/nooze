@@ -6,9 +6,11 @@
 }
 .main-nav {
   grid-area: nav;
+  font-size: 4vmin;
 }
 .side {
   grid-area: sidebar;
+  font-size: 4vmin:
 }
 .ad {
   grid-area: ad;
@@ -19,6 +21,7 @@
 
 .cat-btn {
     overflow: hidden;
+    font-size: 100%;
     text-overflow: ellipsis;
     border-radius: 5px;
     margin-left: 1px;
@@ -29,6 +32,7 @@
 
 .recent-btn {
     overflow: hidden;
+    font-size: 100%;
     text-overflow: ellipsis;
     border-radius: 5px;
     margin-left: 1px;
@@ -40,6 +44,7 @@
 
 .topic-btn {
     overflow: hidden;
+    font-size: 80%;
     text-overflow: ellipsis;
     width: 70%;
     margin: 2px;
@@ -94,7 +99,7 @@
 
 @media (min-width: 700px) {
   .wrapper {
-    grid-template-columns: 1fr 8fr 2fr;
+    grid-template-columns: 3fr 8fr 2fr;
     grid-template-areas:
       "header header  header"
       "nav    content sidebar"
@@ -110,29 +115,12 @@
 }
 
 body {
-    # background-color: rgba(255, 255, 255, 0.5);
-    # background-image: url("nytimes.gif");
-    # background-blend-mode: lighten;
     background-color: lightgray;
+    font-size: 1.5vmin;
 }
 
-/* .header { */
-/*     height: 10vh; */
-/*     background-color: lightyellow; */
-/* } */
-
-/* @media (min-width: 700px) { */
-/*     .content { */
-/*	display: grid; */
-/*	grid-gap: 5px; */
-/*	grid-template-columns: 1fr 1fr; */
-/*	grid-template-areas: */
-/*	"article article" */
-/*     } */
-/* } */
-
 .content {
-    height: 75vh;
+    height: 85vh;
     margin: 0px;
     padding: 0px;
     overflow: auto;
@@ -151,7 +139,7 @@ body {
 }
 
 .side {
-    height: 45vh;
+    height: 55vh;
     padding: 4px;
     overflow: auto;
     color: white;
@@ -199,24 +187,21 @@ body {
 }
 
 .main-nav {
-    height: 75vh;
+    height: 85vh;
     overflow: auto;
     background-color: lightcyan;
 }
 
 .main-footer {
-    height: 5vh;
+    height: 2vh;
     background-color: powderblue;
 }
-
-/* .left-nav { */
-/*     list-style-type: none; */
-/* } */
 
 .article {
     display: flex;
     flex-direction: column;
-    max-width: 350px;
+    font-size: 4vmin;
+    max-width: 95%;
     padding-left: 10px;
     margin: 5px;
     border: 2px solid lightgray;
@@ -227,7 +212,8 @@ body {
 .art-header {
     /* border-left: 2px solid lightblue; */
     background-color: rgb(230,246,247);
-    font-size: 80%;
+    /* min-height: 1in;*/
+    font-size: 60%;
     text-align: left;
     vertical-align: bottom;
     color: rgb(140,1,15);
@@ -240,13 +226,14 @@ body {
 .art-content {
     /* border: 2px solid lightblue; */
     font-style: 900;
-    min-height: 80%;
+    font-size: 100%;
+    /*min-height: 1.5in;*/
     background-color: white;
     /* border-top: none; */
     border-radius: 10px;
     padding: 3px;
     margin: 0px;
-    font-size: 120%;
+    /*font-size: 120%;*/
 }
 
 .art-content a {

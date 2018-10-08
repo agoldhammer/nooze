@@ -60,10 +60,10 @@
 }
 
 .time-btn {
-    width: 5%;
+    width: 12%;
     background-color: white;
     color: black;
-    font-size: 10px;
+    font-size: 2.5vmin;
 }
 
 .time-btn-active {
@@ -120,7 +120,7 @@ body {
 }
 
 .content {
-    height: 85vh;
+    height: 93vh;
     margin: 0px;
     padding: 0px;
     overflow: auto;
@@ -133,7 +133,7 @@ body {
 }
 
 .ad {
-    height: 30vh;
+    height: 20vh;
     overflow: auto;
     background-color: papayawhip;
 }
@@ -149,7 +149,7 @@ body {
 .main-head {
     display: flex;
     flex-direction: column;
-    height: 110px;
+    min-height: 10vmin;
     padding: 5px;
     color: white;
     background-color: teal;
@@ -187,7 +187,7 @@ body {
 }
 
 .main-nav {
-    height: 85vh;
+    height: 93vh;
     overflow: auto;
     background-color: lightcyan;
 }

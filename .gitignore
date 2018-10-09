@@ -23,3 +23,5 @@ newsfrt/target/
 nzdb/bin/activate
 nzdb/bin/conda
 nzdb/bin/deactivate
+htmlcov/
+.coverage

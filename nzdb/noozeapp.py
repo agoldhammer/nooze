@@ -18,7 +18,7 @@ class WebQueryParseException(Exception):
 
 
 # configuration
-DEBUG = True
+DEBUG = False
 
 
 SECRET_KEY = 'ag3rf8-(cnc&my7&)a2(!v*mj9*7v#3cgix@=&5&qam&57n7&o0=$'
@@ -258,6 +258,7 @@ def recent_json():
 
 @app.route("/json/qry", methods=["GET", "POST"])
 def qry_json():
+    print(request.args)
     query = request.args.get("data")
     print(query)
     statuses = handleQuery(query)

@@ -1,3 +1,5 @@
+# import json
+from urllib.parse import quote
 from nzdb.noozeapp import parse_query, extract_options, app
 
 testqs = ["-d 1 *Executive *Judicial",
@@ -38,3 +40,19 @@ def test_routes():
     assert(b'html' in resp.data)
     resp = client.get('/help')
     assert(b'html' in resp.data)
+
+
+def test_json_routes():
+    # json api
+    client = app.test_client()
+    resp = client.get('/json/cats')
+    assert(resp.content_type == 'application/json')
+
+    resp = client.get('/json/recent')
+    assert(resp.status == '200 OK')
+
+    data = 'data=?-d 1 *France'
+    data = quote(data)
+    resp = client.get('/json/qry?data=-d%201%20*France')
+    assert(resp.content_type == 'application/json')
+    assert(resp.status == '200 OK')

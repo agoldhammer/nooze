@@ -34,33 +34,6 @@ class TopicNotFound(Exception):
     pass
 
 
-# NO LONGER NEEDED
-
-# class Status(object):
-#     """docstring for Status
-#     Object to represent a pruned Twitter status
-#     ======
-#     """
-#     def __init__(self, statusid):
-#         """
-#         :param statusid: statusid in db
-#         instantiates class representing the statusid
-#         """
-#         super(Status, self).__init__()
-#         status = mapStatusIDtoStatus(statusid)
-#         assert(status is not None)
-#         self.text = status["text"]
-#         self.created_at = status["created_at"]
-#         self.source = status["source"]
-#         self.author = status["author"]
-
-#     def __str__(self):
-#         s1 = "<{}> [{}]\n".format(self.author, self.created_at)
-#         s2 = "{}".format(self.text)
-#         s2 = wrapper.fill(s2)
-#         return s1 + s2
-
-
 # db abstraction section
 
 def get_status_date_range():
@@ -74,24 +47,6 @@ def get_status_date_range():
     maxdate = cursor.sort("created_at", DESCENDING).limit(1)
     mindate = cursor_dn.sort("created_at", ASCENDING).limit(1)
     return mindate[0]["created_at"], maxdate[0]["created_at"]
-
-
-# def mapStatusIDtoStatusField(statusid, field):
-#     """
-#     :param str statusid: id of status to decode
-#     :param str field: name of field to decode
-#     :return: status
-#     :rtype: dict
-#     """
-#     assert(field in ["author", "text", "created_at", "source"])
-#     status = twitterdb.statuses.find_one({"id": statusid})
-#     if status is None:
-#         raise StatusNotFound(statusid)
-#     return status[field]
-
-
-# def mapStatusIDtoStatusClass(status_id):
-#     return Status(status_id)
 
 
 def mapStatusIDtoStatus(status_id):
@@ -174,15 +129,6 @@ def storeStatus(status):
         twitterdb.statuses.insert(status)
     except DKE:
         raise DuplicateStatus(status)
-
-
-# def storeTopicID(topic, id, lang):
-#     twitterdb.topids.insert({"topic": topic, "id": id, "lang": lang})
-
-
-# def clean_topids():
-#     """drop all docs in topids"""
-#     twitterdb.topids.delete_many({})
 
 
 def sid_to_topics(sid, lang):
@@ -281,25 +227,6 @@ def websearch(query):
     return esearch(search_context, DESCENDING)
 
 
-# def search(stext):
-#     """
-#       Search without date context
-#     :param str stext: text to search for
-#     :param str lang: language to search on
-#     :return: cursor
-#     :rtype: cursor
-#     """
-#     cursor = twitterdb.statuses.find({"$text": {"$search": stext}},
-#                                      projection=({"$diacriticSensitive":
-#                                                   False}))
-#     return cursor
-
-
-# def general_find(args, projection=None):
-#     """general find function"""
-#     return twitterdb.statuses.find(args, projection=projection)
-
-
 def find_topic_all(topic, lang):
     """
     return all statuses for topic
@@ -327,13 +254,6 @@ def explain_pp(cursor):
     better_explanation = json.dumps(explanation, default=json_util.default,
                                     sort_keys=True, indent=4)
     print(better_explanation)
-    # for status in cursor[:5]:
-    #     status.pop("_id")
-    #     jstatus = json.dumps(status, default=json_util.default,
-    #                          sort_keys=True, indent=4)
-    #     nstatus = namedtuple("Status", status.keys())(**status)
-    #     print(jstatus)
-    #     print(nstatus)
 
 
 def status_from_id(id):

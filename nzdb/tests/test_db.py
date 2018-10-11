@@ -1,5 +1,5 @@
 from nzdb.dbconnect import twitterdb
-from nzdb.dbif import getTopics, esearch
+from nzdb.dbif import getTopics, esearch, storeAuthor, getUnknownAuthors
 from nzdb.cmdline import processCmdLine
 from nzdb.dupdetect import isURL, tokenize, filter_dups, dedupe
 
@@ -50,3 +50,13 @@ def test_filter_dups1():
         assert(isdup == results.pop(0))
     filtered = [status for status in dedupe(cursor)]
     assert(filtered == [cursor[0], cursor[1], cursor[4]])
+
+
+def test_unknown_find():
+    storeAuthor("xyz123zyx", "U")
+    found = False
+    unknowns = getUnknownAuthors()
+    for unk in unknowns:
+        if unk['author'] == 'xyz123zyx':
+            found = True
+    assert(found)

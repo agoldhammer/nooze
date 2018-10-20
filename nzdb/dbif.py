@@ -5,6 +5,7 @@ import pytz
 from textwrap import TextWrapper
 from nzdb.dbconnect import twitterdb
 from nzdb.cmdline import processCmdLine
+from nzdb.dupdetect import tokenize
 import json
 from bson import json_util
 
@@ -246,6 +247,18 @@ def get_all_texts():
     """
     # mindate, maxdate = get_status_date_range()
     return twitterdb.statuses.find(projection={"_id": False, "text": True})
+
+
+def deurlize(text):
+    # remove urls from text
+    return " ".join(tokenize(text))
+
+
+def sample(skip=0, nsamples=10000):
+    # tokenize strips out urls
+    cursor = get_all_texts()
+    cursor = cursor.skip(skip).limit(nsamples)
+    return (deurlize(s["text"]) for s in cursor)
 
 
 def explain_pp(cursor):

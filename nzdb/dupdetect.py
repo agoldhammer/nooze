@@ -17,7 +17,7 @@ def isURL(text):
 
     pattern = r'(https?://\S+)'
     p = re.compile(pattern)
-    if p.match(text):
+    if p.match(text.strip()):
         return True
     else:
         return False
@@ -64,7 +64,7 @@ def filter_dups(cursor):
             yield DUP, status
 
 
-# Called by usnews
+# Called by noozeapp
 def dedupe(cursor):
     """
      Takes cursor of statuses with duplicates and returns cursor without

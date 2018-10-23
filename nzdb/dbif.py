@@ -249,16 +249,20 @@ def get_all_texts():
     return twitterdb.statuses.find(projection={"_id": False, "text": True})
 
 
-def deurlize(text):
-    # remove urls from text
-    return " ".join(tokenize(text))
+def cleanup(text):
+    # remove urls, @xxx, RT from text
+    # tokenize removes urls
+    tokens = tokenize(text)
+    tokens = [tok for tok in tokens if tok != "RT" and
+              not tok.startswith('@')]
+    return " ".join(tokens)
 
 
 def sample(skip=0, nsamples=10000):
     # tokenize strips out urls
     cursor = get_all_texts()
     cursor = cursor.skip(skip).limit(nsamples)
-    return (deurlize(s["text"]) for s in cursor)
+    return (cleanup(s["text"]) for s in cursor)
 
 
 def explain_pp(cursor):

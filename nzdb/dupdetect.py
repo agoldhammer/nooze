@@ -15,7 +15,7 @@ def isURL(text):
      :rtype: boolean
     """
 
-    pattern = r'(https?://\S+)'
+    pattern = r'(https?:/\S*)'
     p = re.compile(pattern)
     if p.match(text.strip()):
         return True
@@ -30,7 +30,10 @@ def tokenize(text):
      :return: list of tokens
      :rtype: list
     """
-
+    # take care of edge case where url is surrounded by newlines
+    text = text.replace('\n', ' ')
+    # replace ellipses
+    text = text.replace('\u2026', '')
     tokens = text.split(' ')
     return [token for token in tokens if not isURL(token)]
 

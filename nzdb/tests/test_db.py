@@ -29,9 +29,11 @@ def test_isURL():
     s1 = "https://www.agmardor.com"
     s2 = "http://www.agm.com"
     s3 = "xyz"
+    s4 = "https:/"
     assert(isURL(s1))
     assert(isURL(s2))
     assert(isURL(s3) is False)
+    assert(isURL(s4))
 
 
 def test_tokenize():

@@ -56,3 +56,11 @@ def test_json_routes():
     resp = client.get('/json/qry?data=-d%201%20*France')
     assert(resp.content_type == 'application/json')
     assert(resp.status == '200 OK')
+
+
+def test_count():
+    client = app.test_client()
+    resp = client.get('/json/count')
+    assert(resp.status == '200 OK')
+    jdata = resp.get_json()
+    assert(isinstance(jdata['count'], int))

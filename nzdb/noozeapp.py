@@ -241,6 +241,15 @@ def unid(s):
     return s
 
 
+@app.route("/json/count", methods=["GET"])
+def count_json():
+    n = getCount()
+    resp = jsonify(count=n)
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    return resp
+
+
 @app.route("/json/recent", methods=["GET", "POST"])
 def recent_json():
     # this will get last 3 hours of posts

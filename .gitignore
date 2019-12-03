@@ -28,3 +28,4 @@ htmlcov/
 */.nrepl-port
 */figwheel_server.log
 todo.txt
+.vscode

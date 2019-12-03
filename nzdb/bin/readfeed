@@ -12,7 +12,7 @@ from nzdb.dbif import (storeStatus, DuplicateStatus,
                         get_lastread, store_lastread,
                         mapAuthorToLang, AuthorNotFound)
 from nzdb.prettytext import printStatus
-from tweepy import Cursor
+from tweepy import Cursor, TweepError
 
 LOGFILENAME = nzdbConfig['logfile']
 LOGNAME = nzdbConfig['logname']
@@ -77,23 +77,27 @@ def processStatus(i, status, quiet):
 @click.option('--sleeptime', default=900, help='sleep time in secs')
 def main(quiet, daemon, sleeptime):
     global maxid, processed, added, skipped
-    api = getTwitterApi(wait=True, notify=True)
+    
     while True:
-        # this will return 0, 0 on virgin database
-        _, maxid = get_lastread()
-        processed = added = skipped = 0
-        # setting sinceid to None does the right thing
-        sinceid = None if maxid == 0 else maxid
-        for i, status in enumerate(Cursor(api.list_timeline,
-                                          owner_screen_name=OWNER,
-                                          slug=SLUG,
-                                          since_id=sinceid).items()):
-            processStatus(i, status, quiet)
+        try:
+            api = getTwitterApi(wait=True, notify=True)
+            # this will return 0, 0 on virgin database
+            _, maxid = get_lastread()
+            processed = added = skipped = 0
+            # setting sinceid to None does the right thing
+            sinceid = None if maxid == 0 else maxid
+            for i, status in enumerate(Cursor(api.list_timeline,
+                                                owner_screen_name=OWNER,
+                                                slug=SLUG,
+                                                since_id=sinceid).items()):
+                processStatus(i, status, quiet)
 
-        store_lastread(maxid)
-        msg = f"processed {processed}. added {added}.\
-    skipped {skipped} maxid {maxid}"
-        logger.info(msg)
+            store_lastread(maxid)
+            msg = f"processed {processed}. added {added}.\
+        skipped {skipped} maxid {maxid}"
+            logger.info(msg)
+        except TweepError as e:
+            print(e)
         if not quiet:
             print(msg)
         if not daemon:
@@ -112,4 +116,5 @@ if __name__ == "__main__":
         '%(asctime)s-%(name)s:%(levelname)s--%(message)s')
     fh.setFormatter(myformat)
     logger.addHandler(fh)
+    # pylint: disable=no-value-for-parameter
     main()

@@ -48,49 +48,49 @@ Here is a sample docker-compose config file:
 ```yaml
 version: '3.7'
 services:
-	dbhost:
-		image: mongo:4.0.2-xenial
-		restart: always
-		container_name: dbhost
-		volumes:
-			- $HOME/backup:/warehouse
-			- $HOME/data/db:/data/db
-		ports:
-			- "27018:27017"
-		command: mongod --logpath=/dev/null
+ dbhost:
+  image: mongo:4.0.2-xenial
+  restart: always
+  container_name: dbhost
+  volumes:
+    - $HOME/backup:/warehouse
+    - $HOME/data/db:/data/db
+  ports:
+    - "27018:27017"
+  command: mongod --logpath=/dev/null
 
-	usnews:
-		depends_on:
-			- dbhost
-		image: artgoldhammer/nooze:$NZTAG
-		container_name: usnews
-		restart: always
-		volumes:
-			- $HOME/confs:/app/confs
-		environment:
-			NZDBCONF: /app/confs/cloud-us.conf
-		ports:
-			- "9090:9090"
-			- "3031:3031"
+usnews:
+  depends_on:
+   - dbhost
+  image: artgoldhammer/nooze:$NZTAG
+  container_name: usnews
+  restart: always
+  volumes:
+    - $HOME/confs:/app/confs
+  environment:
+    NZDBCONF: /app/confs/cloud-us.conf
+  ports:
+    - "9090:9090"
+    - "3031:3031"
 
-	eunews:
-		depends_on:
-			- dbhost
-		image: artgoldhammer/nooze:$NZTAG
-		container_name: eunews
-		restart: always
-		volumes:
-			- $HOME/confs:/app/confs
-		environment:
-			NZDBCONF: /app/confs/cloud-eu.conf
-		ports:
-			- "9091:9090"
-			- "3032:3031"
+eunews:
+  depends_on:
+    - dbhost
+  image: artgoldhammer/nooze:$NZTAG
+  container_name: eunews
+  restart: always
+  volumes:
+    - $HOME/confs:/app/confs
+  environment:
+    NZDBCONF: /app/confs/cloud-eu.conf
+  ports:
+    - "9091:9090"
+    - "3032:3031"
 ```
 
 And here is a sample NZDB conf:
 
-```
+```bash
 
 [authentication]
 
@@ -124,7 +124,7 @@ static-dir=/app/static
 
 #### replacing container on website
 
-```
+```bash
 ubuntu@ip-172-31-42-130:~$ NZTAG=0923 docker-compose -f cloud-multi.yaml up -d
 Creating network "ubuntu_default" with the default driver
 Creating dbhost ... done

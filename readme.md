@@ -26,6 +26,10 @@ Nooze is built on top of ```twdb2```, which handles all interfacing with the dat
 
 `storeauthtable` stores the author list specified in `xxauthors.txt`.
 
+#### Building the container
+
+docker build -t artgoldhammer/nooze:110319 .
+
 #### Running on cloud host
 
 Remember to use the NEWSTAG env variable to specify the correct version
@@ -41,7 +45,7 @@ Congiuration files *must* be located in the `app/confs` directory of `noozep`.
 
 Here is a sample docker-compose config file:
 
-```
+```yaml
 version: '3.7'
 services:
 	dbhost:

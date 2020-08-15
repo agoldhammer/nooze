@@ -16,8 +16,9 @@ from tweepy import Cursor, TweepError
 
 LOGFILENAME = nzdbConfig['logfile']
 LOGNAME = nzdbConfig['logname']
-OWNER = nzdbConfig['owner']
-SLUG = nzdbConfig['slug']
+# OWNER = nzdbConfig['owner']
+# SLUG = nzdbConfig['slug']
+LIST_ID = nzdbConfig['list_id']
 
 processed = 0
 added = 0
@@ -88,8 +89,7 @@ def main(quiet, daemon, sleeptime):
             # setting sinceid to None does the right thing
             sinceid = None if maxid == 0 else maxid
             for i, status in enumerate(Cursor(api.list_timeline,
-                                                owner_screen_name=OWNER,
-                                                slug=SLUG,
+                                                list_id=LIST_ID,
                                                 since_id=sinceid).items()):
                 processStatus(i, status, quiet)
 

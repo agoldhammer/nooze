@@ -29,3 +29,4 @@ htmlcov/
 */figwheel_server.log
 todo.txt
 .vscode
+nooze.code-workspace

@@ -52,6 +52,7 @@ nzdbConfig['logname'] = config.get('logging', 'logname')
 
 nzdbConfig['owner'] = config.get('twitter', 'owner')
 nzdbConfig['slug'] = config.get('twitter', 'slug')
+nzdbConfig['list_id'] = config.get('twitter', 'id')
 
 nzdbConfig['templates'] = expand(config.get('app', 'template-dir'))
 nzdbConfig['static'] = expand(config.get('app', 'static-dir'))

@@ -85,5 +85,7 @@ def processCmdLine(cl=None):
 if __name__ == "__main__":
     sc = processCmdLine("-d 1 tax")
     print(sc)
-    sc = processCmdLine(None)
+    sc = processCmdLine("-d 1 *france")
     print(sc)
+    # sc = processCmdLine(None)
+    # print(sc)

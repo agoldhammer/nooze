@@ -30,3 +30,5 @@ htmlcov/
 todo.txt
 .vscode
 nooze.code-workspace
+requirements.txt.old
+requirements.txt.lessold

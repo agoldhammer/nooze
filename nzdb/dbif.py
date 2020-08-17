@@ -9,8 +9,7 @@ from nzdb.dupdetect import tokenize
 import json
 from bson import json_util
 
-wrapper = TextWrapper(width=60, initial_indent='+====>',
-                      subsequent_indent='       ')
+wrapper = TextWrapper(width=60, initial_indent="+====>", subsequent_indent="       ")
 
 utc = pytz.UTC
 
@@ -36,6 +35,7 @@ class TopicNotFound(Exception):
 
 
 # db abstraction section
+
 
 def get_status_date_range():
     """
@@ -91,8 +91,7 @@ def getTopics():
     :return: cursor of topics
     :rtype: topic document
     """
-    return twitterdb.topics.find(
-        projection={"_id": False}).sort("desc", ASCENDING)
+    return twitterdb.topics.find(projection={"_id": False}).sort("desc", ASCENDING)
 
 
 def cleanTopicsCollection():
@@ -201,7 +200,7 @@ def _setup_mongo_query(search_context):
     if search_context.query is not None:
         query = search_context.query
         query = expand_topic(query)
-        searchon["$text"] = {"$search": query}
+        searchon["$text"] = {"$search": query, "$diacriticSensitive": False}
     return searchon
 
 
@@ -215,9 +214,7 @@ def esearch(search_context, sort_dir=ASCENDING):
     """
     try:
         searchon = _setup_mongo_query(search_context)
-        cursor = twitterdb.statuses.find(searchon,
-                                         projection={"$diacriticSensitive":
-                                                     False})
+        cursor = twitterdb.statuses.find(searchon)
         return None, cursor.sort("created_at", sort_dir)
     except QueryParseException as e:
         return e, []
@@ -233,10 +230,7 @@ def find_topic_all(topic, lang):
     return all statuses for topic
     """
     query = expand_topic(topic)
-    cursor = twitterdb.statuses.find({"$text": {"$search": query,
-                                                "$language": lang}},
-                                     projection=({"$diacriticSensitive":
-                                                  False}))
+    cursor = twitterdb.statuses.find({"$text": {"$search": query, "$language": lang, "$diacriticSensitive": False}})
     return cursor
 
 
@@ -253,8 +247,7 @@ def cleanup(text):
     # remove urls, @xxx, RT from text
     # tokenize removes urls
     tokens = tokenize(text)
-    tokens = [tok for tok in tokens if tok != "RT" and
-              not tok.startswith('@')]
+    tokens = [tok for tok in tokens if tok != "RT" and not tok.startswith("@")]
     return " ".join(tokens)
 
 
@@ -268,8 +261,9 @@ def sample(skip=0, nsamples=10000):
 def explain_pp(cursor):
     """pretty print cursor explanation"""
     explanation = cursor.explain()
-    better_explanation = json.dumps(explanation, default=json_util.default,
-                                    sort_keys=True, indent=4)
+    better_explanation = json.dumps(
+        explanation, default=json_util.default, sort_keys=True, indent=4
+    )
     print(better_explanation)
 
 
@@ -304,11 +298,12 @@ def get_lastread():
 
 def store_lastread(maxid):
     _id, oldmaxid = get_lastread()
-    twitterdb.lastread.update({"_id": _id, "maxid": oldmaxid},
-                              {"_id": _id, "maxid": maxid}, upsert=True)
+    twitterdb.lastread.update(
+        {"_id": _id, "maxid": oldmaxid}, {"_id": _id, "maxid": maxid}, upsert=True
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sc = processCmdLine(None)
     err, cursor = esearch(sc)
     for s in cursor:

@@ -1,6 +1,6 @@
 FROM alpine:3.10.3
 
-MAINTAINER artgoldhammer
+LABEL maintainter="art.goldhammer@gmail.com"
 
 RUN apk add --no-cache \
 	uwsgi-python3 \
@@ -24,7 +24,7 @@ RUN pip3 install -r nooze/requirements.txt
 COPY nzdb/ /nooze/nzdb/
 # RUN ls -laR /nooze
 COPY setup.py nooze/
-WORKDIR nooze
+WORKDIR /nooze
 RUN python3 setup.py install
 RUN rm -rf /nooze
 # 

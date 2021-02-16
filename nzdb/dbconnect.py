@@ -1,7 +1,7 @@
 import sys
-from pymongo import MongoClient, TEXT, ASCENDING
+from pymongo import MongoClient  # , TEXT, ASCENDING
+from pymongo.errors import ConnectionFailure
 from nzdb.configurator import nzdbConfig
-import time
 
 DBNAME = nzdbConfig["DBNAME"]
 DBHOST = nzdbConfig['DBHOST']
@@ -20,22 +20,20 @@ class Twitterdb:
     def __init__(self, dbname):
         # db with 4 collections: statuses, authors, topics, hashestodocids
         print("db init", DBHOST, DBNAME)
-        self.client = MongoClient(DBHOST)
-        time.sleep(5)
-        max_retries = 5
+        self.client = MongoClient(DBHOST, connect=True)
+        max_retries = 20
         tried = 0
         connected = False
         while tried < max_retries and not connected:
-            print("Waiting 1 sec for conn")
-            time.sleep(1)
-            if self.client is not None:
+            try:
+                self.client.admin.command("ismaster")
                 connected = True
-            else:
-                print(f"Failed to conn on try {tried}")
+            except ConnectionFailure:
+                print("Waiting for connection")
                 tried += 1
 
         if not connected:
-            print(f"Could not connect to server {DBHOST}; quitting")
+            print(f"Could not connect to server {DBHOST} after {tried} retries; quitting")
             sys.exit(1)
 
         self.db = self.client[dbname]

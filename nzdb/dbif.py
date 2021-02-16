@@ -200,7 +200,10 @@ def _setup_mongo_query(search_context):
     if search_context.query is not None:
         query = search_context.query
         query = expand_topic(query)
-        searchon["$text"] = {"$search": query, "$diacriticSensitive": False}
+        searchon = {
+            "created_at": {"$gte": start, "$lte": end},
+            "$text": {"$search": query, "$diacriticSensitive": False},
+        }
     return searchon
 
 
@@ -230,7 +233,9 @@ def find_topic_all(topic, lang):
     return all statuses for topic
     """
     query = expand_topic(topic)
-    cursor = twitterdb.statuses.find({"$text": {"$search": query, "$language": lang, "$diacriticSensitive": False}})
+    cursor = twitterdb.statuses.find(
+        {"$text": {"$search": query, "$language": lang, "$diacriticSensitive": False}}
+    )
     return cursor
 
 

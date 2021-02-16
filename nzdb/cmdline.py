@@ -57,7 +57,7 @@ def processCmdLine(cl=None):
         today = delorean.Delorean()
         if args.day is not None:
             daysAgo = int(args.day)
-            startde = today.next_day(-1*daysAgo)
+            startde = today.next_day(-1 * daysAgo)
             endde = today
         elif args.hour is not None:
             hrsAgo = int(args.hour)
@@ -85,7 +85,7 @@ def processCmdLine(cl=None):
 if __name__ == "__main__":
     sc = processCmdLine("-d 1 tax")
     print(sc)
-    sc = processCmdLine("-d 1 *france")
+    sc = processCmdLine("-d 1 *France")
     print(sc)
     # sc = processCmdLine(None)
     # print(sc)

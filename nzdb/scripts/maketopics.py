@@ -5,7 +5,6 @@ Run this program to update topics collection in database
   after a change to topics.txt
 """
 import os
-import sys
 
 from collections import namedtuple
 from nzdb.configurator import nzdbConfig
@@ -43,8 +42,8 @@ def main():
                 assert(len(line) == 4)
                 topic = row(*line)._asdict()
                 storeTopic(topic)
+    display_all()
 
 
 if __name__ == '__main__':
     main()
-    display_all()

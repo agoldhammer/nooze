@@ -8,17 +8,23 @@ import logging
 from logging import FileHandler
 from nzdb.nzauth import getTwitterApi
 from nzdb.configurator import nzdbConfig
-from nzdb.dbif import (storeStatus, DuplicateStatus,
-                        get_lastread, store_lastread,
-                        mapAuthorToLang, AuthorNotFound)
+from nzdb.dbif import (
+    storeStatus,
+    DuplicateStatus,
+    get_lastread,
+    store_lastread,
+    mapAuthorToLang,
+    AuthorNotFound,
+)
 from nzdb.prettytext import printStatus
 from tweepy import Cursor, TweepError
 
-LOGFILENAME = nzdbConfig['logfile']
-LOGNAME = nzdbConfig['logname']
+LOGFILENAME = nzdbConfig["logfile"]
+LOGNAME = nzdbConfig["logname"]
 # OWNER = nzdbConfig['owner']
 # SLUG = nzdbConfig['slug']
-LIST_ID = nzdbConfig['list_id']
+LIST_ID = nzdbConfig["list_id"]
+logger = None
 
 processed = 0
 added = 0
@@ -31,9 +37,13 @@ def pruneStatus(status):
     :param status: the status record
     :returns pruned status as dictionary
     """
-    return({"id": status.id, "author": status.author.screen_name,
-            "created_at": status.created_at, "source": status.source,
-            "text": status.text})
+    return {
+        "id": status.id,
+        "author": status.author.screen_name,
+        "created_at": status.created_at,
+        "source": status.source,
+        "text": status.text,
+    }
 
 
 def processStatus(i, status, quiet):
@@ -57,14 +67,13 @@ def processStatus(i, status, quiet):
             status["language_code"] = language_code
         except AuthorNotFound:
             # missing authors are logged but recorded as Unknown
-            status["language_code"] = 'U'
-            logger.info(f'Author not found {author}')
+            status["language_code"] = "U"
+            logger.info(f"Author not found {author}")
         storeStatus(status)
         # If, successful, display the entry being processed ...
         if not quiet:
             out = "\n---\n{}. author {} id {}  time {} via {}"
-            print(out.format(i + 1, author, status_id,
-                             created_at, status["source"]))
+            print(out.format(i + 1, author, status_id, created_at, status["source"]))
             printStatus(status)
         added += 1
     # if status is already in db, we get here
@@ -72,12 +81,26 @@ def processStatus(i, status, quiet):
         skipped += 1
 
 
+def setup_logging():
+    # print("Processing usnews feeds for nzdb")
+    global logger
+    logger = logging.getLogger(LOGNAME)
+    logger.setLevel(logging.INFO)
+    fh = FileHandler(LOGFILENAME)
+    fh.setLevel(logging.INFO)
+    myformat = logging.Formatter("%(asctime)s-%(name)s:%(levelname)s--%(message)s")
+    fh.setFormatter(myformat)
+    logger.addHandler(fh)
+
+
 @click.command()
-@click.option('--quiet/--verbose', default=True, help="default quiet")
-@click.option('-d', '--daemon/--no-daemon', default=False, help='run as daemon')
-@click.option('--sleeptime', default=900, help='sleep time in secs')
+@click.option("--quiet/--verbose", default=True, help="default quiet")
+@click.option("-d", "--daemon/--no-daemon", default=False, help="run as daemon")
+@click.option("--sleeptime", default=900, help="sleep time in secs")
 def main(quiet, daemon, sleeptime):
     global maxid, processed, added, skipped
+
+    setup_logging()
 
     msg = ""
     while True:
@@ -88,9 +111,9 @@ def main(quiet, daemon, sleeptime):
             processed = added = skipped = 0
             # setting sinceid to None does the right thing
             sinceid = None if maxid == 0 else maxid
-            for i, status in enumerate(Cursor(api.list_timeline,
-                                                list_id=LIST_ID,
-                                                since_id=sinceid).items()):
+            for i, status in enumerate(
+                Cursor(api.list_timeline, list_id=LIST_ID, since_id=sinceid).items()
+            ):
                 processStatus(i, status, quiet)
 
             store_lastread(maxid)
@@ -108,14 +131,6 @@ def main(quiet, daemon, sleeptime):
 
 
 if __name__ == "__main__":
-    # print("Processing usnews feeds for nzdb")
-    logger = logging.getLogger(LOGNAME)
-    logger.setLevel(logging.INFO)
-    fh = FileHandler(LOGFILENAME)
-    fh.setLevel(logging.INFO)
-    myformat = logging.Formatter(
-        '%(asctime)s-%(name)s:%(levelname)s--%(message)s')
-    fh.setFormatter(myformat)
-    logger.addHandler(fh)
+
     # pylint: disable=no-value-for-parameter
     main()

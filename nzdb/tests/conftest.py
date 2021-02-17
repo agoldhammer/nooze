@@ -2,6 +2,7 @@ import pytest
 import os
 import sys
 from subprocess import call
+from nzdb.connectdb import get_db
 
 config_file = os.getenv("NZDBCONF")
 if "localtest.conf" not in config_file:
@@ -29,5 +30,5 @@ def setup_testdb():
     yield
 
     # teardown
-    from nzdb.dbconnect import twitterdb
-    twitterdb.db.client.drop_database('localtest')
+    db = get_db()
+    db.client.drop_database('localtest')

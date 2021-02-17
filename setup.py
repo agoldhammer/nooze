@@ -17,7 +17,7 @@ setup(
     entry_points={
         "console_scripts": [
             "storeauths = nzdb.scripts.storeauthtable:main",
-            "storetopics = nzdb.scripts.maketopics:main",
+            "storetopics = nzdb.scripts.storetopics:main",
             "readfeed = nzdb.scripts.readfeed:main",
             "unknown = nzdb.scripts.idknown:showUknowns",
             "query = nzdb.scripts.query:main",

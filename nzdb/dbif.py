@@ -3,7 +3,7 @@ from pymongo.errors import DuplicateKeyError as DKE
 from pymongo import ASCENDING, DESCENDING
 import pytz
 from textwrap import TextWrapper
-from nzdb.dbconnect import twitterdb
+from nzdb.connectdb import get_db
 from nzdb.cmdline import processCmdLine
 from nzdb.dupdetect import tokenize
 import json
@@ -37,21 +37,21 @@ class TopicNotFound(Exception):
 # db abstraction section
 
 
-def get_status_date_range():
-    """
-    Return first, last status dates
-    :return: (earliest date in db, latest date in db)
-    :rtype: (datetime, datetime)
-    """
-    cursor = twitterdb.statuses.find({}, projection={"created_at": True})
-    cursor_dn = cursor.clone()
-    maxdate = cursor.sort("created_at", DESCENDING).limit(1)
-    mindate = cursor_dn.sort("created_at", ASCENDING).limit(1)
-    return mindate[0]["created_at"], maxdate[0]["created_at"]
+# def get_status_date_range():
+#     """
+#     Return first, last status dates
+#     :return: (earliest date in db, latest date in db)
+#     :rtype: (datetime, datetime)
+#     """
+#     cursor = twitterdb.statuses.find({}, projection={"created_at": True})
+#     cursor_dn = cursor.clone()
+#     maxdate = cursor.sort("created_at", DESCENDING).limit(1)
+#     mindate = cursor_dn.sort("created_at", ASCENDING).limit(1)
+#     return mindate[0]["created_at"], maxdate[0]["created_at"]
 
 
-def mapStatusIDtoStatus(status_id):
-    return twitterdb.statuses.find_one({"id": status_id})
+# def mapStatusIDtoStatus(status_id):
+#     return twitterdb.statuses.find_one({"id": status_id})
 
 
 def getAuthors():
@@ -59,12 +59,14 @@ def getAuthors():
     :return: list of authors from db
     :rtype: list of strings
     """
-    authrecs = twitterdb.authors.find()
+    db = get_db()
+    authrecs = db.authors.find()
     return [authrec["author"] for authrec in authrecs]
 
 
 def mapAuthorToLang(author):
-    author_record = twitterdb.authors.find_one({"author": author})
+    db = get_db()
+    author_record = db.authors.find_one({"author": author})
     if author_record is None:
         raise AuthorNotFound(author)
     else:
@@ -72,7 +74,8 @@ def mapAuthorToLang(author):
 
 
 def getUnknownAuthors():
-    unknowns = twitterdb.authors.find({"language_code": "U"})
+    db = get_db()
+    unknowns = db.authors.find({"language_code": "U"})
     return unknowns
 
 
@@ -82,7 +85,8 @@ def getCount():
     :return: count
     :rtype: int
     """
-    return twitterdb.statuses.estimated_document_count()
+    db = get_db()
+    return db.statuses.estimated_document_count()
 
 
 def getTopics():
@@ -91,11 +95,13 @@ def getTopics():
     :return: cursor of topics
     :rtype: topic document
     """
-    return twitterdb.topics.find(projection={"_id": False}).sort("desc", ASCENDING)
+    db = get_db()
+    return db.topics.find(projection={"_id": False}).sort("desc", ASCENDING)
 
 
 def cleanTopicsCollection():
-    twitterdb.topics.drop()
+    db = get_db()
+    db.topics.drop()
 
 
 def storeTopic(topic):
@@ -103,8 +109,8 @@ def storeTopic(topic):
     Stores topic dict in topics collectiion, indexed by topic
     :param topic: dictionary(topic, desc cat query)
     """
-    # twitterdb.topics.update({"topic": topic["topic"]}, topic, upsert=True)
-    twitterdb.topics.insert(topic)
+    db = get_db()
+    db.topics.insert(topic)
 
 
 def storeAuthor(author, lang):
@@ -114,8 +120,9 @@ def storeAuthor(author, lang):
     :param str lang:
     :return: nothing
     """
+    db = get_db()
     row = {"author": author, "language_code": lang}
-    twitterdb.authors.update({"author": author}, row, upsert=True)
+    db.authors.update({"author": author}, row, upsert=True)
 
 
 def storeStatus(status):
@@ -125,15 +132,17 @@ def storeStatus(status):
     :return: nothing
     :raises: DuplicateKeyError
     """
+    db = get_db()
     try:
-        twitterdb.statuses.insert(status)
+        db.statuses.insert(status)
     except DKE:
         raise DuplicateStatus(status)
 
 
 def sid_to_topics(sid, lang):
     """status id to topics"""
-    c = twitterdb.topids.find({"id": sid, "lang": lang})
+    db = get_db()
+    c = db.topids.find({"id": sid, "lang": lang})
     return [t["topic"] for t in c]
 
 
@@ -144,8 +153,9 @@ def docDate(doc):
     :return: created_at datetime
     :rtype: datetime
     """
+    db = get_db()
     docid = doc["docid"]
-    doc = twitterdb.statuses.find_one({"id": docid}, {"created_at": 1})
+    doc = db.statuses.find_one({"id": docid}, {"created_at": 1})
     return utc.localize(doc["created_at"])
 
 
@@ -156,7 +166,8 @@ Map topic to query
     :return: query associated with topic
     :rtype: string
     """
-    row = twitterdb.topics.find_one({"topic": topic})
+    db = get_db()
+    row = db.topics.find_one({"topic": topic})
     if row is not None:
         return row["query"]
     else:
@@ -215,9 +226,10 @@ def esearch(search_context, sort_dir=ASCENDING):
     :return: cursor of full statuses based on query
     :rtype: err, cursor
     """
+    db = get_db()
     try:
         searchon = _setup_mongo_query(search_context)
-        cursor = twitterdb.statuses.find(searchon)
+        cursor = db.statuses.find(searchon)
         return None, cursor.sort("created_at", sort_dir)
     except QueryParseException as e:
         return e, []
@@ -232,8 +244,9 @@ def find_topic_all(topic, lang):
     """
     return all statuses for topic
     """
+    db = get_db()
     query = expand_topic(topic)
-    cursor = twitterdb.statuses.find(
+    cursor = db.statuses.find(
         {"$text": {"$search": query, "$language": lang, "$diacriticSensitive": False}}
     )
     return cursor
@@ -245,7 +258,8 @@ def get_all_texts():
     :rtype: cursor
     """
     # mindate, maxdate = get_status_date_range()
-    return twitterdb.statuses.find(projection={"_id": False, "text": True})
+    db = get_db()
+    return db.statuses.find(projection={"_id": False, "text": True})
 
 
 def cleanup(text):
@@ -277,7 +291,8 @@ def status_from_id(id):
     :param: id
     :return: status
     """
-    return twitterdb.statuses.find_one({"id": id})
+    db = get_db()
+    return db.statuses.find_one({"id": id})
 
 
 def fetch_recent(cmdline="-H 3 dummy"):
@@ -294,7 +309,8 @@ def fetch_recent(cmdline="-H 3 dummy"):
 
 
 def get_lastread():
-    last = twitterdb.lastread.find_one()
+    db = get_db()
+    last = db.lastread.find_one()
     if not last:
         return (0, 0)
     else:
@@ -303,7 +319,8 @@ def get_lastread():
 
 def store_lastread(maxid):
     _id, oldmaxid = get_lastread()
-    twitterdb.lastread.update(
+    db = get_db()
+    db.lastread.update(
         {"_id": _id, "maxid": oldmaxid}, {"_id": _id, "maxid": maxid}, upsert=True
     )
 

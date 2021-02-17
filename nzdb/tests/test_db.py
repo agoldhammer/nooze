@@ -1,11 +1,12 @@
-from nzdb.dbconnect import twitterdb
+from nzdb.connectdb import get_db
 from nzdb.dbif import getTopics, esearch, storeAuthor, getUnknownAuthors
 from nzdb.cmdline import processCmdLine
 from nzdb.dupdetect import isURL, tokenize, filter_dups, dedupe
 
 
 def test_connect():
-    info = twitterdb.client.server_info()
+    db = get_db()
+    info = db.client.server_info()
     assert(info is not None)
 
 

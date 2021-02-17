@@ -1,13 +1,15 @@
 # database abstraction layer
-from pymongo.errors import DuplicateKeyError as DKE
-from pymongo import ASCENDING, DESCENDING
-import pytz
-from textwrap import TextWrapper
-from nzdb.connectdb import get_db
-from nzdb.cmdline import processCmdLine
-from nzdb.dupdetect import tokenize
 import json
+from textwrap import TextWrapper
+
+import pytz
 from bson import json_util
+from pymongo import ASCENDING, DESCENDING
+from pymongo.errors import DuplicateKeyError as DKE
+
+from nzdb.cmdline import processCmdLine
+from nzdb.connectdb import get_db
+from nzdb.dupdetect import tokenize
 
 wrapper = TextWrapper(width=60, initial_indent="+====>", subsequent_indent="       ")
 

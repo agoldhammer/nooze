@@ -1,15 +1,16 @@
 #!/usr/bin/env python
 import os
+
 from nzdb.configurator import nzdbConfig
-from nzdb.dbif import mapAuthorToLang, getAuthors, storeAuthor
+from nzdb.dbif import getAuthors, mapAuthorToLang, storeAuthor
 
 
 def main():
-    authfile = nzdbConfig['authfile']
+    authfile = nzdbConfig["authfile"]
     authfile = os.path.expanduser(authfile)
     with open(authfile) as lines:
         for line in lines:
-            [author, lang] = line.split(':')
+            [author, lang] = line.split(":")
             storeAuthor(author, lang.strip())
     display_all()
 
@@ -22,5 +23,5 @@ def display_all():
         print(f"{author} speaks {lang}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

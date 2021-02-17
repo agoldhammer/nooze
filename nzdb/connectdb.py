@@ -1,10 +1,12 @@
 import sys
+
 from pymongo import MongoClient  # , TEXT, ASCENDING
 from pymongo.errors import ConnectionFailure
+
 from nzdb.configurator import nzdbConfig
 
 DBNAME = nzdbConfig["DBNAME"]
-DBHOST = nzdbConfig['DBHOST']
+DBHOST = nzdbConfig["DBHOST"]
 
 _thedb = None
 
@@ -40,7 +42,9 @@ def get_db():
                 tried += 1
 
         if not connected:
-            print(f"Could not connect to server {DBHOST} after {tried} retries; quitting")
+            print(
+                f"Could not connect to server {DBHOST} after {tried} retries; quitting"
+            )
             sys.exit(1)
         else:
             _thedb = client[DBNAME]

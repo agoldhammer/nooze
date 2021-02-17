@@ -20,7 +20,7 @@ def expand(path):
 
 # must set environment variable NZDBCONF to path of config file
 config_file = os.getenv("NZDBCONF")
-errmsg = f'Configuration file {config_file} not found; check env var NZDBCONF'
+errmsg = f"Configuration file {config_file} not found; check env var NZDBCONF"
 if config_file:
     config_file = expand(config_file)
     if not os.path.isfile(config_file):
@@ -34,28 +34,27 @@ else:
     sys.exit(255)
 
 
-nzdbConfig['OAUTH_TOKEN'] = config.get('authentication', 'OAUTH_TOKEN')
-nzdbConfig['OAUTH_TOKEN_SECRET'] = config.get('authentication',
-                                              'OAUTH_TOKEN_SECRET')
-nzdbConfig['CONSUMER_KEY'] = config.get('authentication', 'CONSUMER_KEY')
-nzdbConfig['CONSUMER_SECRET'] = config.get('authentication', 'CONSUMER_SECRET')
+nzdbConfig["OAUTH_TOKEN"] = config.get("authentication", "OAUTH_TOKEN")
+nzdbConfig["OAUTH_TOKEN_SECRET"] = config.get("authentication", "OAUTH_TOKEN_SECRET")
+nzdbConfig["CONSUMER_KEY"] = config.get("authentication", "CONSUMER_KEY")
+nzdbConfig["CONSUMER_SECRET"] = config.get("authentication", "CONSUMER_SECRET")
 
-host = config.get('db', "HOST")
-nzdbConfig['DBHOST'] = 'localhost' if host is None else host
-nzdbConfig['DBNAME'] = config.get('db', 'DBNAME')
+host = config.get("db", "HOST")
+nzdbConfig["DBHOST"] = "localhost" if host is None else host
+nzdbConfig["DBNAME"] = config.get("db", "DBNAME")
 
-nzdbConfig['authfile'] = expand(config.get('authors', 'authfile'))
-nzdbConfig['topicsfile'] = expand(config.get('topics', 'topicsfile'))
+nzdbConfig["authfile"] = expand(config.get("authors", "authfile"))
+nzdbConfig["topicsfile"] = expand(config.get("topics", "topicsfile"))
 
-nzdbConfig['logfile'] = expand(config.get('logging', 'logfile'))
-nzdbConfig['logname'] = config.get('logging', 'logname')
+nzdbConfig["logfile"] = expand(config.get("logging", "logfile"))
+nzdbConfig["logname"] = config.get("logging", "logname")
 
-nzdbConfig['owner'] = config.get('twitter', 'owner')
-nzdbConfig['slug'] = config.get('twitter', 'slug')
-nzdbConfig['list_id'] = config.get('twitter', 'id')
+nzdbConfig["owner"] = config.get("twitter", "owner")
+nzdbConfig["slug"] = config.get("twitter", "slug")
+nzdbConfig["list_id"] = config.get("twitter", "id")
 
-nzdbConfig['templates'] = expand(config.get('app', 'template-dir'))
-nzdbConfig['static'] = expand(config.get('app', 'static-dir'))
+nzdbConfig["templates"] = expand(config.get("app", "template-dir"))
+nzdbConfig["static"] = expand(config.get("app", "static-dir"))
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(nzdbConfig)

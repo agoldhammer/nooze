@@ -2,20 +2,21 @@
 
 """read news feeds from twitter"""
 
-from time import sleep
-import click
 import logging
 from logging import FileHandler
-from nzdb.nzauth import getTwitterApi
+from time import sleep
+
+import click
 from nzdb.configurator import nzdbConfig
 from nzdb.dbif import (
-    storeStatus,
+    AuthorNotFound,
     DuplicateStatus,
     get_lastread,
-    store_lastread,
     mapAuthorToLang,
-    AuthorNotFound,
+    store_lastread,
+    storeStatus,
 )
+from nzdb.nzauth import getTwitterApi
 from nzdb.prettytext import printStatus
 from tweepy import Cursor, TweepError
 

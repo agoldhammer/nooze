@@ -1,16 +1,14 @@
 import re
-from itertools import chain
-from itertools import groupby
-from collections import defaultdict, OrderedDict
-from flask import (Flask, request, render_template, redirect,
-                   flash, url_for, jsonify)
+from collections import OrderedDict, defaultdict
+from itertools import chain, groupby
 
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from flask_bootstrap import Bootstrap
 from flask_script import Manager
 
-from nzdb.dbif import websearch, getTopics, getCount, fetch_recent
-from nzdb.dupdetect import dedupe
 from nzdb.configurator import nzdbConfig
+from nzdb.dbif import fetch_recent, getCount, getTopics, websearch
+from nzdb.dupdetect import dedupe
 
 
 class WebQueryParseException(Exception):
@@ -21,15 +19,13 @@ class WebQueryParseException(Exception):
 DEBUG = False
 
 
-SECRET_KEY = 'ag3rf8-(cnc&my7&)a2(!v*mj9*7v#3cgix@=&5&qam&57n7&o0=$'
-USERNAME = 'admin'
-PASSWORD = 'default'
+SECRET_KEY = "ag3rf8-(cnc&my7&)a2(!v*mj9*7v#3cgix@=&5&qam&57n7&o0=$"
+USERNAME = "admin"
+PASSWORD = "default"
 
-templates = nzdbConfig['templates']
-static = nzdbConfig['static']
-app = Flask(__name__,
-            template_folder=templates,
-            static_folder=static)
+templates = nzdbConfig["templates"]
+static = nzdbConfig["static"]
+app = Flask(__name__, template_folder=templates, static_folder=static)
 # app.config.from_object(__name__)
 
 manager = Manager(app)
@@ -90,35 +86,36 @@ def getShortStats():
     return size, cats
 
 
-class Row():
+class Row:
     """docstring for Row"""
+
     def __init__(self, header, statuses):
         self.statuses = statuses
         self.header = header
 
 
-@app.template_filter('taburlize')
+@app.template_filter("taburlize")
 def taburlize(s):
     """flask filter similar to urlize but sets target to new tab """
-    pattern = r'(https?://\S+)'
+    pattern = r"(https?://\S+)"
     p = re.compile(pattern)
     return p.sub(r'<a href="\1" target="_blank"> ...more &#10149; </a>', s)
 
 
 @app.route("/error")
 def showError():
-    return render_template('error.html')
+    return render_template("error.html")
 
 
 @app.route("/stats")
 def showStats():
     n, cats = getStats()
-    return render_template('stats.html', n=n, cats=cats)
+    return render_template("stats.html", n=n, cats=cats)
 
 
 @app.route("/help")
 def showHelp():
-    return render_template('help.html')
+    return render_template("help.html")
 
 
 def extract_options(parts):
@@ -133,7 +130,7 @@ def extract_options(parts):
         if skip:
             skip = False
             continue
-        if (parts[i].startswith('-')) and i + 1 < n:
+        if (parts[i].startswith("-")) and i + 1 < n:
             if parts[i][1] not in "dseH":
                 # -d -s -e are only valid options
                 raise WebQueryParseException
@@ -174,7 +171,7 @@ def parse_query(query):
     starred = []
     unstarred = []
     for part in parts:
-        if part.startswith('*'):
+        if part.startswith("*"):
             starred.append(part)
         else:
             unstarred.append(part)
@@ -213,7 +210,7 @@ def handleQuery(query):
 def showNews(query):
     statuses = handleQuery(query)
     row = Row(header=query, statuses=statuses)
-    return render_template('statuses.html', row=row)
+    return render_template("statuses.html", row=row)
 
 
 @app.route("/")
@@ -265,6 +262,7 @@ def recent_json():
 # TODO: need to do something about flashed error messages in handleQuery
 # These won't work with the json interface
 
+
 @app.route("/json/qry", methods=["GET", "POST"])
 def qry_json():
     print(request.args)
@@ -278,5 +276,5 @@ def qry_json():
     return resp
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     manager.run()

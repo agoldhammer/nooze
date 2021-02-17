@@ -15,7 +15,7 @@ def isURL(text):
      :rtype: boolean
     """
 
-    pattern = r'(https?:/\S*)'
+    pattern = r"(https?:/\S*)"
     p = re.compile(pattern)
     if p.match(text.strip()):
         return True
@@ -31,10 +31,10 @@ def tokenize(text):
      :rtype: list
     """
     # take care of edge case where url is surrounded by newlines
-    text = text.replace('\n', ' ')
+    text = text.replace("\n", " ")
     # replace ellipses
-    text = text.replace('\u2026', '')
-    tokens = text.split(' ')
+    text = text.replace("\u2026", "")
+    tokens = text.split(" ")
     return [token for token in tokens if not isURL(token)]
 
 
@@ -56,7 +56,7 @@ def filter_dups(cursor):
         b = blake2b(digest_size=20)
         tokens = tokenize(status["text"])
         urlstripped = " ".join(tokens)
-        b.update(urlstripped.encode('latin-1', "backslashreplace"))
+        b.update(urlstripped.encode("latin-1", "backslashreplace"))
         h = b.hexdigest()
         # real statuses have ids but testing statuses don't, so
         # we kludge this by appending a 1 if there is no id

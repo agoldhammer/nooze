@@ -6,11 +6,12 @@ cmdline.py -- command line processing for feed query
 """
 import argparse
 import sys
-import delorean
 from datetime import timedelta
 
+import delorean
 
-class SearchContext():
+
+class SearchContext:
     def __init__(self, startdate, enddate, query, expand):
         """
         :class: SearchContext, provides context for searches
@@ -23,8 +24,9 @@ class SearchContext():
 
     def __str__(self):
         return "Search context: {}-{}\nQuery: {}\
-         Expand: {}".format(self.startdate, self.enddate, self.query,
-                            self.expand)
+         Expand: {}".format(
+            self.startdate, self.enddate, self.query, self.expand
+        )
 
 
 def processCmdLine(cl=None):
@@ -33,7 +35,7 @@ def processCmdLine(cl=None):
     return start and end times as datetime objects
     :param cl: command line can be fed by program
     """
-    text1 = 'Process docs between start and end dates'
+    text1 = "Process docs between start and end dates"
     epilog = "Specify dates as yyyy-mm-ddThh:mm:ss.sss \
     or (European style!!) dd/mm/yyyy,\
     specify d days ago with -d option \
@@ -46,8 +48,7 @@ def processCmdLine(cl=None):
     parser.add_argument("-e", "--end", help="end date/time")
     parser.add_argument("-x", "--expand", help="expand threshold")
     parser.add_argument("-H", "--hour", help="start h hours ago")
-    parser.add_argument("query", type=str, nargs="+",
-                        help="specify query")
+    parser.add_argument("query", type=str, nargs="+", help="specify query")
     if cl is None:
         args = parser.parse_args()
     else:
@@ -64,8 +65,7 @@ def processCmdLine(cl=None):
             startde = today - timedelta(hours=hrsAgo)
             endde = today
         elif args.start is not None:
-            startde = delorean.parse(args.start,
-                                     yearfirst=True, dayfirst=False)
+            startde = delorean.parse(args.start, yearfirst=True, dayfirst=False)
         else:
             startde = today
         if args.end is not None:
@@ -78,8 +78,7 @@ def processCmdLine(cl=None):
         sys.exit(1)
     expand = int(args.expand) if args.expand is not None else None
     query = " ".join(args.query)
-    return SearchContext(startde.datetime, endde.datetime,
-                         query=query, expand=expand)
+    return SearchContext(startde.datetime, endde.datetime, query=query, expand=expand)
 
 
 if __name__ == "__main__":

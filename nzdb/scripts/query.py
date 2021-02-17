@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 import sys
+
 from nzdb.cmdline import processCmdLine
 from nzdb.dbif import esearch
 from nzdb.prettytext import printMatches
@@ -19,6 +20,6 @@ def main():
         printMatches(cursor)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
     sys.exit(0)

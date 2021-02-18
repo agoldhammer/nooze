@@ -1,6 +1,7 @@
 # database abstraction layer
 import json
 from textwrap import TextWrapper
+from time import perf_counter
 
 import pytz
 from bson import json_util
@@ -231,7 +232,7 @@ def esearch(search_context, sort_dir=ASCENDING):
     db = get_db()
     try:
         searchon = _setup_mongo_query(search_context)
-        cursor = db.statuses.find(searchon)
+        cursor = db.statuses.find(searchon, {"_id": False})
         return None, cursor.sort("created_at", sort_dir)
     except QueryParseException as e:
         return e, []
@@ -327,8 +328,31 @@ def store_lastread(maxid):
     )
 
 
+def instrumented_esearch(search_context, sort_dir=ASCENDING):
+    """
+      If query is None, search on date range only
+    :param: search_context
+    :type: search_context or None
+    :return: cursor of full statuses based on query
+    :rtype: err, cursor
+    """
+    t0 = perf_counter()
+    db = get_db()
+    t1 = perf_counter()
+    try:
+        searchon = _setup_mongo_query(search_context)
+        cursor = db.statuses.find(searchon)
+        t2 = perf_counter()
+        c = cursor.sort("created_at", sort_dir)
+        t3 = perf_counter()
+        times = (t0, t1, t2, t3)
+        return None, c, times
+    except QueryParseException as e:
+        return e, []
+
+
 if __name__ == "__main__":
     sc = processCmdLine(None)
-    err, cursor = esearch(sc)
+    err, cursor = instrumented_esearch(sc)
     for s in cursor:
         print(s)

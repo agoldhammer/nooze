@@ -3,7 +3,7 @@
 import sys
 
 from nzdb.cmdline import processCmdLine
-from nzdb.dbif import esearch
+from nzdb.dbif import instrumented_esearch
 from nzdb.prettytext import printMatches
 
 
@@ -13,11 +13,13 @@ class SearchException(Exception):
 
 def main():
     search_context = processCmdLine()
-    err, cursor = esearch(search_context)
+    err, cursor, times = instrumented_esearch(search_context)
     if err is not None:
         print("Error parsing query:", err)
     else:
+        t0, t1, t2, t3 = times
         printMatches(cursor)
+        print(f"get_db {t1 - t0}, search {t2 - t1}, sort {t3 - t2}")
 
 
 if __name__ == "__main__":

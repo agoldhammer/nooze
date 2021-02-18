@@ -1,6 +1,8 @@
+import logging
 import re
 from collections import OrderedDict, defaultdict
 from itertools import chain, groupby
+from time import perf_counter_ns
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from flask_bootstrap import Bootstrap
@@ -15,8 +17,18 @@ class WebQueryParseException(Exception):
     pass
 
 
+LOGFILENAME = nzdbConfig["logfile"]
+LOGNAME = nzdbConfig["logname"]
+
 # configuration
 DEBUG = False
+logger = logging.getLogger(LOGNAME)
+logging.basicConfig(level=logging.DEBUG)
+f_handler = logging.FileHandler(LOGFILENAME)
+f_format = logging.Formatter('%(asctime)s:%(name)s-app:%(levelname)s:%(message)s')
+f_handler.setFormatter(f_format)
+f_handler.setLevel(logging.NOTSET)
+logger.addHandler(f_handler)
 
 
 SECRET_KEY = "ag3rf8-(cnc&my7&)a2(!v*mj9*7v#3cgix@=&5&qam&57n7&o0=$"
@@ -26,6 +38,10 @@ PASSWORD = "default"
 templates = nzdbConfig["templates"]
 static = nzdbConfig["static"]
 app = Flask(__name__, template_folder=templates, static_folder=static)
+
+# added 2/18/21 per https://stackoverflow.com/questions/37931927/why-is-flasks-jsonify-method-slow/37932098
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
+app.config['JSON_SORT_KEYS'] = False
 # app.config.from_object(__name__)
 
 manager = Manager(app)
@@ -233,9 +249,9 @@ def cats_json():
     return resp
 
 
-def unid(s):
-    del s["_id"]
-    return s
+# def unid(s):
+#     # del s["_id"]
+#     return s
 
 
 @app.route("/json/count", methods=["GET"])
@@ -250,13 +266,21 @@ def count_json():
 @app.route("/json/recent", methods=["GET", "POST"])
 def recent_json():
     # this will get last 3 hours of posts
+    t0 = perf_counter_ns()
     error, cursor = fetch_recent()
+    t1 = perf_counter_ns()
     if error is None:
-        cursor = [unid(s) for s in cursor]
-        resp = jsonify(cursor)
+        # cursor = [unid(s) for s in cursor]
+        # t2 = perf_counter_ns()
+        resp = jsonify([s for s in cursor])
         resp.headers["Access-Control-Allow-Origin"] = "*"
         resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    return resp
+        t2 = perf_counter_ns()
+        logger.debug(f"recent: fetch {t1 - t0},  jsonify {t2 - t1} ")
+        return resp
+    else:
+        t0 = 0
+        return 0
 
 
 # TODO: need to do something about flashed error messages in handleQuery
@@ -265,12 +289,17 @@ def recent_json():
 
 @app.route("/json/qry", methods=["GET", "POST"])
 def qry_json():
-    print(request.args)
+    logger.debug(f"qry_json: {request.args}")
     query = request.args.get("data")
-    print(query)
+    # print(query)
+    t0 = perf_counter_ns()
     statuses = handleQuery(query)
-    statuses = [unid(s) for s in statuses]
-    resp = jsonify(statuses)
+    t1 = perf_counter_ns()
+    # statuses = [unid(s) for s in statuses]
+    # t2 = perf_counter_ns()
+    resp = jsonify([s for s in statuses])
+    t2 = perf_counter_ns()
+    logger.debug(f"qry_json: fetch {t1 - t0}, jsonify {t2 - t1} ")
     resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp

@@ -1,12 +1,17 @@
-FROM alpine:3.10.3
+FROM alpine:3.12.2
 
 LABEL maintainter="art.goldhammer@gmail.com"
 
-RUN apk add --no-cache \
+RUN apk add --update --no-cache \
 	uwsgi-python3 \
     logrotate \
-	python3 \
+	python3\
     supervisor
+
+RUN python3 -m ensurepip
+RUN pip3 install --upgrade pip setuptools
+RUN pip install wheel
+
 
 RUN mkdir nooze; mkdir -p /var/log/nooze
 RUN touch /var/log/nooze/nooze.log
@@ -17,14 +22,15 @@ RUN mkdir /app
 
 # install the standing requirements
 COPY requirements.txt nooze/
-RUN pip3 install --upgrade pip
-RUN pip3 install -r nooze/requirements.txt
+# RUN pip install --upgrade pip
+RUN pip install -r nooze/requirements.txt
 
 # install the app environment
 COPY nzdb/ /nooze/nzdb/
 # RUN ls -laR /nooze
-COPY setup.py nooze/
+COPY setup.py /nooze
 WORKDIR /nooze
+# RUN ls -laR /nooze
 RUN python3 setup.py install
 RUN rm -rf /nooze
 # 

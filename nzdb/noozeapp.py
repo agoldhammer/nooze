@@ -10,7 +10,9 @@ from flask_script import Manager
 
 from nzdb.configurator import nzdbConfig
 from nzdb.dbif import fetch_recent, getCount, getTopics, websearch
-from nzdb.dupdetect import dedupe
+
+# TODO! removing dupdetect for now
+# from nzdb.dupdetect import dedupe
 
 
 class WebQueryParseException(Exception):
@@ -222,8 +224,12 @@ def handleQuery(query):
     if not cursors:
         query = None
     # eliminate near duplicates from the display
-    statuses = dedupe(chain(*cursors))
-    return statuses
+
+    # TODO!! for now, remove dedupe from processing chai
+    # print(f"cursors: {cursors}")
+    # statuses = dedupe(chain(*cursors))
+    # return statuses
+    return chain.from_iterable(cursors)
 
 
 # to handle multiple *requests, we must parse the query and chain results

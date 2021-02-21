@@ -2,7 +2,7 @@ import logging
 import re
 from collections import OrderedDict, defaultdict
 from itertools import chain, groupby
-from time import perf_counter_ns
+from time import perf_counter
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from flask_bootstrap import Bootstrap
@@ -46,6 +46,11 @@ app.config['JSON_SORT_KEYS'] = False
 
 manager = Manager(app)
 bootstrap = Bootstrap(app)
+
+
+# timing, return time in ms
+def mstimer():
+    return 1000 * perf_counter()
 
 
 def getStats():
@@ -266,16 +271,16 @@ def count_json():
 @app.route("/json/recent", methods=["GET", "POST"])
 def recent_json():
     # this will get last 3 hours of posts
-    t0 = perf_counter_ns()
+    t0 = mstimer()
     error, cursor = fetch_recent()
-    t1 = perf_counter_ns()
+    t1 = mstimer()
     if error is None:
         # cursor = [unid(s) for s in cursor]
-        # t2 = perf_counter_ns()
+        # t2 = mstimer_ns()
         resp = jsonify([s for s in cursor])
         resp.headers["Access-Control-Allow-Origin"] = "*"
         resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-        t2 = perf_counter_ns()
+        t2 = mstimer()
         logger.debug(f"recent: fetch {t1 - t0},  jsonify {t2 - t1} ")
         return resp
     else:
@@ -292,13 +297,13 @@ def qry_json():
     logger.debug(f"qry_json: {request.args}")
     query = request.args.get("data")
     # print(query)
-    t0 = perf_counter_ns()
+    t0 = mstimer()
     statuses = handleQuery(query)
-    t1 = perf_counter_ns()
+    t1 = mstimer()
     # statuses = [unid(s) for s in statuses]
-    # t2 = perf_counter_ns()
+    # t2 = mstimer_ns()
     resp = jsonify([s for s in statuses])
-    t2 = perf_counter_ns()
+    t2 = mstimer()
     logger.debug(f"qry_json: fetch {t1 - t0}, jsonify {t2 - t1} ")
     resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"

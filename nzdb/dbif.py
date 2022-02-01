@@ -164,10 +164,10 @@ def docDate(doc):
 
 def mapTopicToQuery(topic):
     """
-Map topic to query
-    :param str topic:
-    :return: query associated with topic
-    :rtype: string
+    Map topic to query
+        :param str topic:
+        :return: query associated with topic
+        :rtype: string
     """
     db = get_db()
     row = db.topics.find_one({"topic": topic})

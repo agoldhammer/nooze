@@ -7,13 +7,13 @@ from nzdb.dupdetect import isURL, tokenize, filter_dups, dedupe
 def test_connect():
     db = get_db()
     info = db.client.server_info()
-    assert(info is not None)
+    assert info is not None  # nosec
 
 
 def test_topics():
     topics = getTopics()
     for topic in topics:
-        assert(topic["desc"] != "")
+        assert topic["desc"] != ""  # nosec
 
 
 def test_bad_topic():
@@ -22,8 +22,8 @@ def test_bad_topic():
     """
     search_context = processCmdLine("-d 1 *xyznonsense")
     err, cursor = esearch(search_context)
-    assert(err is not None)
-    assert(cursor == [])
+    assert err is not None  # nosec
+    assert cursor == []  # nosec
 
 
 def test_isURL():
@@ -31,28 +31,31 @@ def test_isURL():
     s2 = "http://www.agm.com"
     s3 = "xyz"
     s4 = "https:/"
-    assert(isURL(s1))
-    assert(isURL(s2))
-    assert(isURL(s3) is False)
-    assert(isURL(s4))
+    assert isURL(s1)  # nosec
+    assert isURL(s2)  # nosec
+    assert isURL(s3) is False  # nosec
+    assert isURL(s4)  # nosec
 
 
 def test_tokenize():
     text = "Now is the time for all good men http://www.agm.com"
     tokenized = ["Now", "is", "the", "time", "for", "all", "good", "men"]
-    assert(tokenize(text) == tokenized)
+    assert tokenize(text) == tokenized  # nosec
 
 
 def test_filter_dups1():
-    cursor = [{"text": "this is a tweet"}, {"text": "this is another"},
-              {"text": "this is a tweet"},
-              {"text": "this is another http://www.example.com"},
-              {"text": "this is à fifth"}]
+    cursor = [
+        {"text": "this is a tweet"},
+        {"text": "this is another"},
+        {"text": "this is a tweet"},
+        {"text": "this is another http://www.example.com"},
+        {"text": "this is à fifth"},
+    ]
     results = [False, False, True, True, False]
     for isdup, _ in filter_dups(cursor):
-        assert(isdup == results.pop(0))
+        assert isdup == results.pop(0)  # nosec
     filtered = [status for status in dedupe(cursor)]
-    assert(filtered == [cursor[0], cursor[1], cursor[4]])
+    assert filtered == [cursor[0], cursor[1], cursor[4]]  # nosec
 
 
 def test_unknown_find():
@@ -60,6 +63,6 @@ def test_unknown_find():
     found = False
     unknowns = getUnknownAuthors()
     for unk in unknowns:
-        if unk['author'] == 'xyz123zyx':
+        if unk["author"] == "xyz123zyx":
             found = True
-    assert(found)
+    assert found  # nosec

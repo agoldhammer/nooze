@@ -113,7 +113,7 @@ def storeTopic(topic):
     :param topic: dictionary(topic, desc cat query)
     """
     db = get_db()
-    db.topics.insert(topic)
+    db.topics.insert_one(topic)
 
 
 def storeAuthor(author, lang):
@@ -125,7 +125,7 @@ def storeAuthor(author, lang):
     """
     db = get_db()
     row = {"author": author, "language_code": lang}
-    db.authors.update({"author": author}, row, upsert=True)
+    db.authors.update_one({"author": author}, {"$set": row}, upsert=True)
 
 
 def storeStatus(status):
@@ -137,7 +137,7 @@ def storeStatus(status):
     """
     db = get_db()
     try:
-        db.statuses.insert(status)
+        db.statuses.insert_one(status)
     except DKE:
         raise DuplicateStatus(status)
 
@@ -323,8 +323,10 @@ def get_lastread():
 def store_lastread(maxid):
     _id, oldmaxid = get_lastread()
     db = get_db()
-    db.lastread.update(
-        {"_id": _id, "maxid": oldmaxid}, {"_id": _id, "maxid": maxid}, upsert=True
+    db.lastread.update_one(
+        {"_id": _id, "maxid": oldmaxid},
+        {"$set": {"_id": _id, "maxid": maxid}},
+        upsert=True,
     )
 
 
@@ -353,6 +355,6 @@ def instrumented_esearch(search_context, sort_dir=ASCENDING):
 
 if __name__ == "__main__":
     sc = processCmdLine(None)
-    err, cursor = instrumented_esearch(sc)
+    err, cursor, times = instrumented_esearch(sc)
     for s in cursor:
         print(s)

@@ -3,17 +3,18 @@ FROM python:alpine
 
 LABEL maintainer="art.goldhammer@gmail.com"
 
+# substituting gunicorn for uwsgi
 RUN apk add --update --no-cache \
-    uwsgi-python3 \
+    # uwsgi-python3 \
     logrotate \
     supervisor
 
 # RUN python3 -m ensurepip
-# RUN pip3 install --upgrade pip setuptools
+RUN pip3 install --upgrade pip
 # RUN pip install wheel
 
 
-RUN mkdir nooze; mkdir -p /var/log/nooze
+RUN mkdir /nooze; mkdir -p /var/log/nooze
 RUN touch /var/log/nooze/nooze.log
 
 RUN mkdir -p /var/log/uwsgi
@@ -21,8 +22,9 @@ RUN touch /var/log/uwsgi/uwsgi.log
 RUN mkdir /app
 
 # install the standing requirements
-COPY requirements.txt nooze/
-RUN pip install -r nooze/requirements.txt
+COPY requirements.txt /nooze
+RUN pip install -r /nooze/requirements.txt
+RUN pip install gunicorn
 
 # install the app environment
 COPY nzdb/ /nooze/nzdb/

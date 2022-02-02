@@ -6,7 +6,6 @@ from time import perf_counter
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from flask_bootstrap import Bootstrap
-from flask_script import Manager
 
 from nzdb.configurator import nzdbConfig
 from nzdb.dbif import fetch_recent, getCount, getTopics, websearch
@@ -27,26 +26,25 @@ DEBUG = False
 logger = logging.getLogger(LOGNAME)
 logging.basicConfig(level=logging.DEBUG)
 f_handler = logging.FileHandler(LOGFILENAME)
-f_format = logging.Formatter('%(asctime)s:%(name)s-app:%(levelname)s:%(message)s')
+f_format = logging.Formatter("%(asctime)s:%(name)s-app:%(levelname)s:%(message)s")
 f_handler.setFormatter(f_format)
 f_handler.setLevel(logging.NOTSET)
 logger.addHandler(f_handler)
 
-
-SECRET_KEY = "ag3rf8-(cnc&my7&)a2(!v*mj9*7v#3cgix@=&5&qam&57n7&o0=$"
-USERNAME = "admin"
-PASSWORD = "default"
+SECRET_KEY = nzdbConfig["SECRET_KEY"]
+USERNAME = nzdbConfig["USERNAME"]
+PASSWORD = nzdbConfig["PASSWORD"]
 
 templates = nzdbConfig["templates"]
 static = nzdbConfig["static"]
 app = Flask(__name__, template_folder=templates, static_folder=static)
 
 # added 2/18/21 per https://stackoverflow.com/questions/37931927/why-is-flasks-jsonify-method-slow/37932098
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = False
-app.config['JSON_SORT_KEYS'] = False
+app.config["JSONIFY_PRETTYPRINT_REGULAR"] = False
+app.config["JSON_SORT_KEYS"] = False
 # app.config.from_object(__name__)
 
-manager = Manager(app)
+# manager = Manager(app)
 bootstrap = Bootstrap(app)
 
 
@@ -119,7 +117,7 @@ class Row:
 
 @app.template_filter("taburlize")
 def taburlize(s):
-    """flask filter similar to urlize but sets target to new tab """
+    """flask filter similar to urlize but sets target to new tab"""
     pattern = r"(https?://\S+)"
     p = re.compile(pattern)
     return p.sub(r'<a href="\1" target="_blank"> ...more &#10149; </a>', s)
@@ -316,5 +314,5 @@ def qry_json():
     return resp
 
 
-if __name__ == "__main__":
-    manager.run()
+# if __name__ == "__main__":
+#     manager.run()

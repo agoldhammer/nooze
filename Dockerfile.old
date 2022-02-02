@@ -1,16 +1,16 @@
-FROM python:alpine
-# using python 3.10
+FROM alpine:3.12.2
 
 LABEL maintainer="art.goldhammer@gmail.com"
 
 RUN apk add --update --no-cache \
     uwsgi-python3 \
     logrotate \
+    python3\
     supervisor
 
-# RUN python3 -m ensurepip
-# RUN pip3 install --upgrade pip setuptools
-# RUN pip install wheel
+RUN python3 -m ensurepip
+RUN pip3 install --upgrade pip setuptools
+RUN pip install wheel
 
 
 RUN mkdir nooze; mkdir -p /var/log/nooze
@@ -22,6 +22,7 @@ RUN mkdir /app
 
 # install the standing requirements
 COPY requirements.txt nooze/
+# RUN pip install --upgrade pip
 RUN pip install -r nooze/requirements.txt
 
 # install the app environment
@@ -30,10 +31,8 @@ COPY nzdb/ /nooze/nzdb/
 COPY setup.py /nooze
 WORKDIR /nooze
 # RUN ls -laR /nooze
-# RUN python3 setup.py install
-# leave installation editable for now
-RUN pip install -e .
-# RUN rm -rf /nooze
+RUN python3 setup.py install
+RUN rm -rf /nooze
 # 
 RUN mkdir -p /etc/supervisor.d
 RUN ln -s /app/supervisor.ini /etc/supervisor.d/
@@ -50,5 +49,5 @@ RUN chmod 755 /var/log/nooze
 # the following line is necessary to make logrotate run w/o hiccup
 RUN touch /var/log/messages
 #
-# ENTRYPOINT ["supervisord", "-n"]
+ENTRYPOINT ["supervisord", "-n"]
 

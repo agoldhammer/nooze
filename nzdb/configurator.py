@@ -56,5 +56,9 @@ nzdbConfig["list_id"] = config.get("twitter", "id")
 nzdbConfig["templates"] = expand(config.get("app", "template-dir"))
 nzdbConfig["static"] = expand(config.get("app", "static-dir"))
 
+nzdbConfig["SECRET_KEY"] = expand(config.get("app", "SECRET_KEY"))
+nzdbConfig["USERNAME"] = expand(config.get("app", "USERNAME"))
+nzdbConfig["PASSWORD"] = expand(config.get("app", "PASSWORD"))
+
 if __name__ == "__main__":
     print(nzdbConfig)

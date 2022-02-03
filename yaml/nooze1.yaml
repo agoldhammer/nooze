@@ -14,13 +14,14 @@ services:
     usnews:
         depends_on:
             - dbhost
-        image: artgoldhammer/nooze:$NZTAG
+        image: artgoldhammer/nooze310:$NZTAG
         container_name: usnews
         restart: always
         volumes:
             - $HOME/confs:/app/confs
         environment:
             NZDBCONF: /app/confs/cloud-us.conf
+        entrypoint: supervisord -n -c supervisor.ini
         ports:
             - "9090:9090"
             - "3031:3031"
@@ -28,13 +29,14 @@ services:
     eunews:
         depends_on:
             - dbhost
-        image: artgoldhammer/nooze:$NZTAG
+        image: artgoldhammer/nooze310:$NZTAG
         container_name: eunews
         restart: always
         volumes:
             - $HOME/confs:/app/confs
         environment:
             NZDBCONF: /app/confs/cloud-eu.conf
+        entrypoint: supervisord -n -c supervisor.ini
         ports:
             - "9091:9090"
             - "3032:3031"

@@ -27,12 +27,13 @@ def conn():
 
 def get_db():
     global _thedb
-    client = conn()
-    if client is None:
-        print("Couldn't connect to database, exiting")
-        sys.exit(1)
-    else:
-        _thedb = client[DBNAME]
+    if not _thedb:
+        client = conn()
+        if client is None:
+            print("Couldn't connect to database, exiting")
+            sys.exit(1)
+        else:
+            _thedb = client[DBNAME]
     return _thedb
 
 

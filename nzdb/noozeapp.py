@@ -262,7 +262,7 @@ def cats_json():
 def count_json():
     n = getCount()
     resp = jsonify(count=n)
-    resp.headers["Access-Control-Allow-Origin"] = "*"
+    # resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
 
@@ -277,7 +277,7 @@ def recent_json():
         # cursor = [unid(s) for s in cursor]
         # t2 = mstimer_ns()
         resp = jsonify([s for s in cursor])
-        resp.headers["Access-Control-Allow-Origin"] = "*"
+        # resp.headers["Access-Control-Allow-Origin"] = "*"
         resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
         t2 = mstimer()
         logger.debug(f"recent: fetch {t1 - t0},  jsonify {t2 - t1} ")
@@ -304,6 +304,6 @@ def qry_json():
     resp = jsonify([s for s in statuses])
     t2 = mstimer()
     logger.debug(f"qry_json: fetch {t1 - t0}, jsonify {t2 - t1} ")
-    resp.headers["Access-Control-Allow-Origin"] = "*"
+    # resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp

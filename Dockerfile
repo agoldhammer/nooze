@@ -17,8 +17,10 @@ RUN pip3 install --upgrade pip
 RUN mkdir /nooze; mkdir -p /var/log/nooze
 RUN touch /var/log/nooze/nooze.log
 
-RUN mkdir -p /var/log/uwsgi
-RUN touch /var/log/uwsgi/uwsgi.log
+# RUN mkdir -p /var/log/uwsgi
+# RUN touch /var/log/uwsgi/uwsgi.log
+RUN mkdir -p /var/log/gunicorn
+RUN touch /var/log/gunicorn/gunicorn.log
 RUN mkdir /app
 
 # install the standing requirements
@@ -37,8 +39,8 @@ WORKDIR /nooze
 RUN pip install -e .
 # RUN rm -rf /nooze
 # 
-RUN mkdir -p /etc/supervisor.d
-RUN ln -s /app/supervisor.ini /etc/supervisor.d/
+# RUN mkdir -p /etc/supervisor.d
+# RUN ln -s /app/supervisor.ini /etc/supervisor.d/
 # 
 
 # CMD tail -f /dev/null
@@ -47,7 +49,7 @@ WORKDIR /app
 RUN cp /app/logging/*conf /etc/logrotate.d
 RUN chmod 644 /etc/logrotate.d/*.conf
 # RUN chown root:root /etc/logrotate.d/*conf
-RUN chmod 755 /var/log/uwsgi
+RUN chmod 755 /var/log/gunicorn
 RUN chmod 755 /var/log/nooze
 # the following line is necessary to make logrotate run w/o hiccup
 RUN touch /var/log/messages

@@ -1,2 +1,0 @@
-pip install git+https://github.com/tweepy/tweepy
-

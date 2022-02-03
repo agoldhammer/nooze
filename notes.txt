@@ -1,4 +1,8 @@
 query: /json/qry?data=-H%203%20*Germany
  python noozeapp.py runserver -h 0.0.0.0 -d -r  , can then connect browser to localhost:5000
 
+ gunicorn -b 0.0.0.0:9090 main:app will start gunicorn in container
+
+ bach-dkr-elite.conf runs database on elite, app in docker on bach
+
  

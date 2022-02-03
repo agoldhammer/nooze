@@ -258,11 +258,6 @@ def cats_json():
     return resp
 
 
-# def unid(s):
-#     # del s["_id"]
-#     return s
-
-
 @app.route("/json/count", methods=["GET"])
 def count_json():
     n = getCount()
@@ -312,7 +307,3 @@ def qry_json():
     resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
-
-
-# if __name__ == "__main__":
-#     manager.run()

@@ -5,4 +5,7 @@ query: /json/qry?data=-H%203%20*Germany
 
  bach-dkr-elite.conf runs database on elite, app in docker on bach
 
- 
+ 2/3/2022: run on elite with mongo4.4 running on linux, with two web apps in docker:
+  use bach-elite-test.yaml
+
+On nooze, use nooze1.yaml; docker image is artgoldhammer/nooze310:latest

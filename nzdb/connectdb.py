@@ -27,7 +27,7 @@ def conn():
 
 def get_db():
     global _thedb
-    if not _thedb:
+    if _thedb is None:
         client = conn()
         if client is None:
             print("Couldn't connect to database, exiting")

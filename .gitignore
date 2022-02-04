@@ -3,7 +3,6 @@
 .envrc
 .cache/
 *.pyc
-requirements.txt
 newsfrt/resources/public/bak
 newsfrt/resources/public/js/compiled/out
 newsfrt/resources/public/js/compiled/test

@@ -6,9 +6,12 @@ from time import perf_counter
 
 from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from flask_bootstrap import Bootstrap
+from flask.json import JSONEncoder
 
 from nzdb.configurator import nzdbConfig
 from nzdb.dbif import fetch_recent, getCount, getTopics, websearch
+
+import ujson as json
 
 # TODO! removing dupdetect for now
 # from nzdb.dupdetect import dedupe
@@ -46,6 +49,18 @@ app.config["JSON_SORT_KEYS"] = False
 
 # manager = Manager(app)
 bootstrap = Bootstrap(app)
+
+
+# for below hack, see https://stackoverflow.com/questions/64203233/how-can-i-use-ujson-as-a-flask-encoder-decoder
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        try:
+            return json.dumps(obj)
+        except TypeError:
+            return JSONEncoder.default(self, obj)
+
+
+app.json_encoder = CustomJSONEncoder
 
 
 # timing, return time in ms

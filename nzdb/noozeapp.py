@@ -245,14 +245,6 @@ def handleQuery(query):
     return chain.from_iterable(cursors)
 
 
-# to handle multiple *requests, we must parse the query and chain results
-@app.route("/statuses/<query>")
-def showNews(query):
-    statuses = handleQuery(query)
-    row = Row(header=query, statuses=statuses)
-    return render_template("statuses.html", row=row)
-
-
 @app.route("/")
 def query():
     if request.method == "GET":
@@ -316,7 +308,8 @@ def qry_json():
     t1 = mstimer()
     # statuses = [unid(s) for s in statuses]
     # t2 = mstimer_ns()
-    resp = jsonify([s for s in statuses])
+    # resp = jsonify([s for s in statuses])
+    resp = jsonify(list(statuses))
     t2 = mstimer()
     logger.debug(f"qry_json: fetch {t1 - t0}, jsonify {t2 - t1} ")
     # resp.headers["Access-Control-Allow-Origin"] = "*"

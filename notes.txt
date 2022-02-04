@@ -1,6 +1,3 @@
-query: /json/qry?data=-H%203%20*Germany
- python noozeapp.py runserver -h 0.0.0.0 -d -r  , can then connect browser to localhost:5000
-
  gunicorn -b 0.0.0.0:9090 main:app will start gunicorn in container
 
  bach-dkr-elite.conf runs database on elite, app in docker on bach
@@ -9,3 +6,14 @@ query: /json/qry?data=-H%203%20*Germany
   use bach-elite-test.yaml
 
 On nooze, use nooze1.yaml; docker image is artgoldhammer/nooze310:latest
+
+#
+To test app locally:
+export NZDBCONF=/home/agold/Prog/nooze/confs/bach2elite.conf
+export FLASK_APP=main
+export FLASK_DEBUG=1
+
+assumes database accessible at elite.local:27017
+flask -h 0.0.0.0 -d runs server on localhost:5000
+
+

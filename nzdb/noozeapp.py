@@ -260,7 +260,6 @@ def cats_json():
     n, cats = getShortStats()
     resp = jsonify(count=n, cats=cats)
     # TODO: This allows cross site request for TESTING, remove LATER
-    resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
 

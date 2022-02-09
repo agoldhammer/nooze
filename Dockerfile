@@ -9,7 +9,7 @@ RUN apk add --update --no-cache \
     logrotate \
     supervisor
 
-RUN pip3 install --upgrade pip
+RUN pip3 install --no-cache-dir --upgrade pip
 RUN mkdir /nooze; mkdir -p /var/log/nooze
 RUN touch /var/log/nooze/nooze.log
 
@@ -19,15 +19,15 @@ RUN mkdir /app
 
 # install the standing requirements
 COPY requirements.txt /nooze
-RUN pip install -r /nooze/requirements.txt
-RUN pip install gunicorn
+RUN pip install --no-cache-dir -r /nooze/requirements.txt
+RUN pip install --no-cache-dir gunicorn==20.1.0
 
 # install the app environment
 COPY nzdb/ /nooze/nzdb/
 COPY setup.py /nooze
 WORKDIR /nooze
 # leave installation editable for now
-RUN pip install -e .
+RUN pip install --no-cache-dir -e .
 # RUN rm -rf /nooze
 # 
 # CMD tail -f /dev/null

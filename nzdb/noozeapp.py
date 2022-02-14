@@ -9,7 +9,7 @@ from flask_bootstrap import Bootstrap
 from flask.json import JSONEncoder
 
 from nzdb.configurator import nzdbConfig
-from nzdb.dbif import fetch_recent, getCount, getTopics, websearch
+from nzdb.dbif import fetch_recent, getCount, getTopics, websearch, xwebsearch
 
 import ujson as json
 
@@ -259,7 +259,7 @@ def query():
 def cats_json():
     n, cats = getShortStats()
     resp = jsonify(count=n, cats=cats)
-    # TODO: This allows cross site request for TESTING, remove LATER
+    resp.headers["server"] = "Nooze Server 0.2.1"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
 
@@ -269,6 +269,7 @@ def count_json():
     n = getCount()
     resp = jsonify(count=n)
     # resp.headers["Access-Control-Allow-Origin"] = "*"
+
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
 
@@ -284,6 +285,7 @@ def recent_json():
         # t2 = mstimer_ns()
         resp = jsonify([s for s in cursor])
         # resp.headers["Access-Control-Allow-Origin"] = "*"
+        resp.headers["server"] = "Nooze Server 0.2.1"
         resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
         t2 = mstimer()
         logger.debug(f"recent: fetch {t1 - t0},  jsonify {t2 - t1} ")
@@ -313,4 +315,16 @@ def qry_json():
     logger.debug(f"qry_json: fetch {t1 - t0}, jsonify {t2 - t1} ")
     # resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["server"] = "Nooze Server 0.2.1"
+    return resp
+
+
+@app.route("/json/xqry", methods=["POST"])
+def xqry_json():
+    xquery = request.get_json()
+    print(xquery)
+    err, statuses = xwebsearch(xquery)
+    resp = jsonify(list(statuses))
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["server"] = "Nooze Server 0.2.1"
     return resp

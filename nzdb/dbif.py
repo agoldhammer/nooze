@@ -1,4 +1,5 @@
 # database abstraction layer
+import delorean
 import json
 from textwrap import TextWrapper
 from time import perf_counter
@@ -8,7 +9,7 @@ from bson import json_util
 from pymongo import ASCENDING, DESCENDING
 from pymongo.errors import DuplicateKeyError as DKE
 
-from nzdb.cmdline import processCmdLine
+from nzdb.cmdline import processCmdLine, SearchContext
 from nzdb.connectdb import get_db
 from nzdb.dupdetect import tokenize
 
@@ -221,6 +222,18 @@ def _setup_mongo_query(search_context):
     return searchon
 
 
+def _setup_mongo_query_from_xquery(xquery):
+    """setup query via json query from Web
+
+    Args:
+        xquery (dict): keys words, start, end
+    """
+    startde = delorean.parse(xquery["start"], yearfirst=True, dayfirst=False).datetime
+    endde = delorean.parse(xquery["end"], yearfirst=True, dayfirst=False).datetime
+    search_context = SearchContext(startde, endde, xquery["words"], None)
+    return _setup_mongo_query(search_context)
+
+
 def esearch(search_context, sort_dir=ASCENDING):
     """
       If query is None, search on date range only
@@ -241,6 +254,21 @@ def esearch(search_context, sort_dir=ASCENDING):
 def websearch(query):
     search_context = processCmdLine(query)
     return esearch(search_context, DESCENDING)
+
+
+def xwebsearch(xquery, sort_dir=ASCENDING):
+    """do web search from json xquery
+
+    Args:
+        xquery (dict): xquery
+    """
+    db = get_db()
+    try:
+        searchon = _setup_mongo_query_from_xquery(xquery)
+        cursor = db.statuses.find(searchon, {"_id": False})
+        return None, cursor.sort("created_at", sort_dir)
+    except QueryParseException as e:
+        return e, []
 
 
 def find_topic_all(topic, lang):

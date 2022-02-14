@@ -248,8 +248,6 @@ def handleQuery(query):
 @app.route("/")
 def query():
     if request.method == "GET":
-        # n, cats = getShortStats()
-        # return render_template("query.html", n=n, cats=cats)
         return render_template("index.html")
     else:
         return redirect("/error")
@@ -268,8 +266,7 @@ def cats_json():
 def count_json():
     n = getCount()
     resp = jsonify(count=n)
-    # resp.headers["Access-Control-Allow-Origin"] = "*"
-
+    resp.headers["server"] = "Nooze Server 0.2.1"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
 
@@ -313,7 +310,6 @@ def qry_json():
     resp = jsonify(list(statuses))
     t2 = mstimer()
     logger.debug(f"qry_json: fetch {t1 - t0}, jsonify {t2 - t1} ")
-    # resp.headers["Access-Control-Allow-Origin"] = "*"
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     resp.headers["server"] = "Nooze Server 0.2.1"
     return resp

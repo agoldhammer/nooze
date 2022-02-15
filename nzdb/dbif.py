@@ -229,6 +229,7 @@ def _setup_mongo_query_from_xquery(xquery):
         xquery (dict): keys words, start, end
         xquery["words"] is a list of strings
     """
+    # !NB: setup expects xquery["words"] to be an array of words
     words = " ".join(xquery["words"])
     startde = delorean.parse(xquery["start"], yearfirst=True, dayfirst=False).datetime
     endde = delorean.parse(xquery["end"], yearfirst=True, dayfirst=False).datetime

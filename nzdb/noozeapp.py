@@ -318,12 +318,12 @@ def qry_json():
 @app.route("/json/xqry", methods=["POST"])
 def xqry_json():
     xquery = request.get_json()
-    print(f"xquery is: {xquery}")
+    # ?print(f"xquery is: {xquery}")
     err, statuses = xwebsearch(xquery)
     if err is None:
         resp = jsonify(statuses=list(statuses), error=0)
     else:
-        print(f"err is {err}")
+        # print(f"err is {err}")
         resp = jsonify(statuses=[], error=str(err))
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     resp.headers["server"] = "Nooze Server 0.2.1"

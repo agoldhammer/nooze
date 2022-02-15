@@ -227,10 +227,12 @@ def _setup_mongo_query_from_xquery(xquery):
 
     Args:
         xquery (dict): keys words, start, end
+        xquery["words"] is a list of strings
     """
+    words = " ".join(xquery["words"])
     startde = delorean.parse(xquery["start"], yearfirst=True, dayfirst=False).datetime
     endde = delorean.parse(xquery["end"], yearfirst=True, dayfirst=False).datetime
-    search_context = SearchContext(startde, endde, xquery["words"], None)
+    search_context = SearchContext(startde, endde, words, None)
     return _setup_mongo_query(search_context)
 
 
@@ -267,7 +269,7 @@ def xwebsearch(xquery, sort_dir=ASCENDING):
         searchon = _setup_mongo_query_from_xquery(xquery)
         cursor = db.statuses.find(searchon, {"_id": False})
         return None, cursor.sort("created_at", sort_dir)
-    except QueryParseException as e:
+    except Exception as e:
         return e, []
 
 

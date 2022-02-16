@@ -9,7 +9,7 @@ from flask_bootstrap import Bootstrap
 from flask.json import JSONEncoder
 
 from nzdb.configurator import nzdbConfig
-from nzdb.dbif import fetch_recent, getCount, getTopics, websearch, xwebsearch
+from nzdb.dbif import fetch_recent, getCount, getTopics, websearch, xcount, xwebsearch
 
 import ujson as json
 
@@ -316,15 +316,26 @@ def qry_json():
 
 
 @app.route("/json/xqry", methods=["POST"])
-def xqry_json():
+def xqry():
     xquery = request.get_json()
-    # ?print(f"xquery is: {xquery}")
     err, statuses = xwebsearch(xquery)
     if err is None:
         resp = jsonify(statuses=list(statuses), error=0)
     else:
-        # print(f"err is {err}")
         resp = jsonify(statuses=[], error=str(err))
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["server"] = "Nooze Server 0.2.1"
+    return resp
+
+
+@app.route("/json/xcount", methods=["POST"])
+def count():
+    xquery = request.get_json()
+    err, count = xcount(xquery)
+    if err is None:
+        resp = jsonify(count=count, error=0)
+    else:
+        resp = jsonify(count=0, error=str(err))
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     resp.headers["server"] = "Nooze Server 0.2.1"
     return resp

@@ -259,11 +259,29 @@ def websearch(query):
     return esearch(search_context, DESCENDING)
 
 
+def xcount(xquery):
+    """count results returned from query as in xwebsearch
+
+    Args:
+        xquery (dict): see xwebsearch
+    Return: int
+    """
+    db = get_db()
+    try:
+        searchon = _setup_mongo_query_from_xquery(xquery)
+        cursor = db.statuses.find(searchon, {"_id": True})
+        return None, len(list(cursor))
+    except Exception as e:
+        return e, 0
+
+
 def xwebsearch(xquery, sort_dir=ASCENDING):
     """do web search from json xquery
 
     Args:
         xquery (dict): xquery
+        xquery dict expects fields words, start, end
+    Return: mongo cursor sorted by date
     """
     db = get_db()
     try:

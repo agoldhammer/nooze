@@ -9,7 +9,15 @@ from flask_bootstrap import Bootstrap
 from flask.json import JSONEncoder
 
 from nzdb.configurator import nzdbConfig
-from nzdb.dbif import fetch_recent, getCount, getTopics, websearch, xcount, xwebsearch
+from nzdb.dbif import (
+    fetch_recent,
+    getCount,
+    getTopics,
+    websearch,
+    xcount,
+    xcounts,
+    xwebsearch,
+)
 
 import ujson as json
 
@@ -336,6 +344,24 @@ def count():
         resp = jsonify(count=count, error=0)
     else:
         resp = jsonify(count=0, error=str(err))
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["server"] = "Nooze Server 0.2.1"
+    return resp
+
+
+@app.route("/json/intvlcounts", methods=["POST"])
+def intvlcounts():
+    """
+    query {words: ["Macron"], start: daatestring,
+     interval: e.g, 1d, 1m, 24h, n: num of intervals}
+    """
+    xcounts_qry = request.get_json()
+    err, result = xcounts(xcounts_qry)
+    if err is None:
+        resp = jsonify(intervals=result, error=0)
+    else:
+        resp = jsonify(intervals=[], error=str(err))
+
     resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     resp.headers["server"] = "Nooze Server 0.2.1"
     return resp

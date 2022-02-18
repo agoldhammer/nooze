@@ -12,6 +12,7 @@ from pymongo.errors import DuplicateKeyError as DKE
 from nzdb.cmdline import processCmdLine, SearchContext
 from nzdb.connectdb import get_db
 from nzdb.dupdetect import tokenize
+import nzdb.tdeltas as td
 
 wrapper = TextWrapper(width=60, initial_indent="+====>", subsequent_indent="       ")
 
@@ -290,6 +291,36 @@ def xwebsearch(xquery, sort_dir=ASCENDING):
         return None, cursor.sort("created_at", sort_dir)
     except Exception as e:
         return e, []
+
+
+def xcounts(xcounts_qry):
+    """get counts for a series of dates specified in the query
+
+    Args:
+        xcounts_qry (dict): {start: ..., intvl: e.g., 24h, 1m, 2d}
+    Returns:
+        dict: {counts: list[int], dates: list[[start, end]], n: int}
+
+    """
+    db = get_db()
+    query = xcounts_qry["words"]
+    words = " ".join(query)
+    start = xcounts_qry["start"]
+    intvl = xcounts_qry["interval"]
+    n = xcounts_qry["n"]
+    print(f"xcounts params: {start}, {intvl}, {n}")
+    intvls = td.calc_intervals(start, intvl, n)
+    counts = []
+    try:
+        for intvl in intvls:
+            sc = SearchContext(intvl[0], intvl[1], words, None)
+            searchon = _setup_mongo_query(sc)
+            cursor = db.statuses.find(searchon, {"_id": True})
+            count = len(list(cursor))
+            counts.append(count)
+        return None, counts
+    except Exception as e:
+        return e, None
 
 
 def find_topic_all(topic, lang):

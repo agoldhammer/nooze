@@ -17,3 +17,5 @@ assumes database accessible at elite.local:27017
 flask -h 0.0.0.0 -d runs server on localhost:5000
 
 
+* nginx certbot setup
+** https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-debian-9?utm_medium=email&utm_source=IaaN&utm_campaign=09132018

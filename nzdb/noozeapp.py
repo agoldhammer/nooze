@@ -304,6 +304,13 @@ def recent_json():
 # These won't work with the json interface
 
 
+@app.after_request
+def after_req(resp):
+    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    resp.headers["server"] = "Nooze Server 0.2.1"
+    return resp
+
+
 @app.route("/json/qry", methods=["GET", "POST"])
 def qry_json():
     logger.debug(f"qry_json: {request.args}")
@@ -318,8 +325,6 @@ def qry_json():
     resp = jsonify(list(statuses))
     t2 = mstimer()
     logger.debug(f"qry_json: fetch {t1 - t0}, jsonify {t2 - t1} ")
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    resp.headers["server"] = "Nooze Server 0.2.1"
     return resp
 
 
@@ -331,8 +336,6 @@ def xqry():
         resp = jsonify(statuses=list(statuses), error=0)
     else:
         resp = jsonify(statuses=[], error=str(err))
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    resp.headers["server"] = "Nooze Server 0.2.1"
     return resp
 
 
@@ -344,8 +347,6 @@ def count():
         resp = jsonify(count=count, error=0)
     else:
         resp = jsonify(count=0, error=str(err))
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    resp.headers["server"] = "Nooze Server 0.2.1"
     return resp
 
 
@@ -362,6 +363,4 @@ def intvlcounts():
     else:
         resp = jsonify(intervals=[], error=str(err))
 
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    resp.headers["server"] = "Nooze Server 0.2.1"
     return resp

@@ -1,0 +1,24 @@
+{
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {
+      "values": [
+        {"period": 1, "query": "x", "value": 1},
+        {"period": 1, "query": "y", "value": 6},
+        {"period": 1, "query": "z", "value": 9},
+        {"period": 2, "query": "x", "value": 7},
+        {"period": 2, "query": "y", "value": 2},
+        {"period": 2, "query": "z", "value": 1},
+        {"period": 3, "query": "x", "value": 6},
+        {"period": 3, "query": "y", "value": 1},
+        {"period": 3, "query": "z", "value": 2}
+      ]
+    },
+    "mark": "bar",
+    "encoding": {
+      "x": {"field": "period"},
+      "y": {"field": "value", "type": "quantitative"},
+      "xOffset": {"field": "query"},
+      "color": {"field": "query"}
+    }
+  }
+  

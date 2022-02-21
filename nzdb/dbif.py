@@ -1,18 +1,19 @@
 # database abstraction layer
-import delorean
 import json
+from dataclasses import dataclass
 from textwrap import TextWrapper
 from time import perf_counter
 
+import delorean
 import pytz
 from bson import json_util
 from pymongo import ASCENDING, DESCENDING
 from pymongo.errors import DuplicateKeyError as DKE
 
-from nzdb.cmdline import processCmdLine, SearchContext
+import nzdb.tdeltas as td
+from nzdb.cmdline import SearchContext, processCmdLine
 from nzdb.connectdb import get_db
 from nzdb.dupdetect import tokenize
-import nzdb.tdeltas as td
 
 wrapper = TextWrapper(width=60, initial_indent="+====>", subsequent_indent="       ")
 
@@ -323,6 +324,26 @@ def xcounts(xcounts_qry):
         return e, None
 
 
+@dataclass
+class graph_item:
+    period: int
+    query: str
+    value: int
+
+
+vega_schema = {
+    "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    "data": {},
+    "mark": "bar",
+    "encoding": {
+        "x": {"field": "period"},
+        "y": {"field": "value", "type": "quantitative"},
+        "xOffset": {"field": "query"},
+        "color": {"field": "query"},
+    },
+}
+
+
 def xgraphdb(query):
     """process subqueries for graphing of counts
     query: {subqueries: [query1, query2]}
@@ -332,14 +353,17 @@ def xgraphdb(query):
     """
     subqueries = query["subqueries"]
     del query["subqueries"]
-    results = {"time": query, "counts": []}
+    results = {"time": query, "data": {}}
+    values = []
     try:
-        for subquery in subqueries:
+        for nqry, subquery in enumerate(subqueries):
             newquery = {"words": subquery} | query
             err, res = xcounts(newquery)
             if err is None:
-                results["counts"].append(res)
-        return None, results
+                for nperiod, val in enumerate(res):
+                    values.append(graph_item(nperiod, str(nqry), val))
+            results["data"]["values"] = values
+        return None, vega_schema | results
     except Exception as e:
         return e, None
 

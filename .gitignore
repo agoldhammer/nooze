@@ -32,4 +32,5 @@ nooze.code-workspace
 requirements.txt.old
 requirements.txt.lessold
 *.code-workspace
-
+testbars.json
+bars.json

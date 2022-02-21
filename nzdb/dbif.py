@@ -323,6 +323,27 @@ def xcounts(xcounts_qry):
         return e, None
 
 
+def xgraphdb(query):
+    """process subqueries for graphing of counts
+    query: {subqueries: [query1, query2]}
+        start: datestring
+        interval: e.g. 1d, 1m, 24h
+        n: num of intervals}
+    """
+    subqueries = query["subqueries"]
+    del query["subqueries"]
+    results = {"time": query, "counts": []}
+    try:
+        for subquery in subqueries:
+            newquery = {"words": subquery} | query
+            err, res = xcounts(newquery)
+            if err is None:
+                results["counts"].append(res)
+        return None, results
+    except Exception as e:
+        return e, None
+
+
 def find_topic_all(topic, lang):
     """
     return all statuses for topic

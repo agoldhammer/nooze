@@ -17,6 +17,7 @@ from nzdb.dbif import (
     xcount,
     xcounts,
     xwebsearch,
+    xgraphdb,
 )
 
 import ujson as json
@@ -364,4 +365,21 @@ def intvlcounts():
     else:
         resp = jsonify(intervals=[], error=str(err))
 
+    return resp
+
+
+@app.route("/json/xgraph", methods=["POST"])
+def xgraph():
+    """Receive set of queries for graphing of counts
+    query: {subqueries: [query1, query2]}
+    start: datestring
+    interval: e.g. 1d, 1m, 24h
+    n: num of intervals}
+    """
+    query = request.get_json()
+    err, result = xgraphdb(query)
+    if err is None:
+        resp = jsonify(result=result, error=0)
+    else:
+        resp = jsonify(result=None, error=str(err))
     return resp

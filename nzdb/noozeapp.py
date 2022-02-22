@@ -375,6 +375,13 @@ def xgraph():
     start: datestring
     interval: e.g. 1d, 1m, 24h
     n: num of intervals}
+
+    ex: {
+    "subqueries": [["Pecresse"], ["Zemmour"], ["Pen"]],
+    "start": "2022-02-14",
+    "interval": "1d",
+    "n": 7
+      }
     """
     query = request.get_json()
     err, result = xgraphdb(query)

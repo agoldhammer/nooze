@@ -309,7 +309,7 @@ def xcounts(xcounts_qry):
     start = xcounts_qry["start"]
     intvl = xcounts_qry["interval"]
     n = xcounts_qry["n"]
-    print(f"xcounts params: {start}, {intvl}, {n}")
+    # print(f"xcounts params: {start}, {intvl}, {n}")
     intvls = td.calc_intervals(start, intvl, n)
     counts = []
     try:

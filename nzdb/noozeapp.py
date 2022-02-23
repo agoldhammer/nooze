@@ -344,9 +344,9 @@ def xqry():
 @app.route("/json/xcount", methods=["POST"])
 def count():
     xquery = request.get_json()
-    err, count = xcount(xquery)
+    err, res = xcount(xquery)
     if err is None:
-        resp = jsonify(count=count, error=0)
+        resp = jsonify(count=res["count"], intervals=res["intervals"], error=0)
     else:
         resp = jsonify(count=0, error=str(err))
     return resp

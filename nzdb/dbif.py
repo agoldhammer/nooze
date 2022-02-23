@@ -319,14 +319,14 @@ def xcounts(xcounts_qry):
             cursor = db.statuses.find(searchon, {"_id": True})
             count = len(list(cursor))
             counts.append(count)
-        return None, counts
+        return None, {"counts": counts, "intervals": intvls}
     except Exception as e:
         return e, None
 
 
 @dataclass
 class graph_item:
-    period: int
+    period: str
     query: str
     value: int
 
@@ -359,9 +359,19 @@ def xgraphdb(query):
         for nqry, subquery in enumerate(subqueries):
             newquery = {"words": subquery} | query
             err, res = xcounts(newquery)
+            counts = res["counts"]
+            intvls = res["intervals"]
+            intvl_strs = []
+            for intvl in intvls:
+                s = intvl[0].isoformat()
+                e = intvl[1].isoformat()
+                intvl_str = "".join([s[:10], " : ", e[:10]])
+                intvl_strs.append(intvl_str)
             if err is None:
-                for nperiod, val in enumerate(res):
-                    values.append(graph_item(nperiod, str(nqry), val))
+                for nperiod, val in enumerate(counts):
+                    values.append(
+                        graph_item(intvl_strs[nperiod], " ".join(subquery), val)
+                    )
             results["data"]["values"] = values
         return None, vega_schema | results
     except Exception as e:

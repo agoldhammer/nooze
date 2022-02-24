@@ -51,7 +51,8 @@ templates = nzdbConfig["templates"]
 static = nzdbConfig["static"]
 app = Flask(__name__, template_folder=templates, static_folder=static)
 
-# added 2/18/21 per https://stackoverflow.com/questions/37931927/why-is-flasks-jsonify-method-slow/37932098
+# added 2/18/21 per
+# https://stackoverflow.com/questions/37931927/why-is-flasks-jsonify-method-slow/37932098
 app.config["JSONIFY_PRETTYPRINT_REGULAR"] = False
 app.config["JSON_SORT_KEYS"] = False
 # app.config.from_object(__name__)
@@ -60,7 +61,8 @@ app.config["JSON_SORT_KEYS"] = False
 bootstrap = Bootstrap(app)
 
 
-# for below hack, see https://stackoverflow.com/questions/64203233/how-can-i-use-ujson-as-a-flask-encoder-decoder
+# for below hack, see
+# https://stackoverflow.com/questions/64203233/how-can-i-use-ujson-as-a-flask-encoder-decoder
 class CustomJSONEncoder(JSONEncoder):
     def default(self, obj):
         try:

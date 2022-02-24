@@ -373,6 +373,7 @@ def xgraph():
     """Receive set of queries for graphing of counts
     query: {subqueries: [query1, query2]}
     start: datestring
+    title: string
     interval: e.g. 1d, 1m, 24h
     n: num of intervals}
 

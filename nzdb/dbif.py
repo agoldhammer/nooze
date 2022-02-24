@@ -347,13 +347,14 @@ vega_schema = {
 def xgraphdb(query):
     """process subqueries for graphing of counts
     query: {subqueries: [query1, query2]}
-        start: datestring
+        start: ISO datestring
+        title: string
         interval: e.g. 1d, 1m, 24h
         n: num of intervals}
     """
     subqueries = query["subqueries"]
     del query["subqueries"]
-    results = {"time": query, "data": {}}
+    results = {"time": query, "title": query["title"], "data": {}}
     values = []
     try:
         for nqry, subquery in enumerate(subqueries):

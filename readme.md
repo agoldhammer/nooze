@@ -8,13 +8,13 @@ The frontend is a separate project, written in Clojurescript and designed as a s
 
 The backend is a mongodb database in a Docker container.
 
-Currently using mongo 4.0.2-xenial image.
+Currently using mongo 4.4
 
 ## Middleware
 
 The frontend consists of the Python app nooze, which can be configured to work with different databases in the backend and to consume different Twitter lists. See [Configuration](#configuration).
 
-Nooze is built on top of ```twdb2```, which handles all interfacing with the database. Nooze is a Web service based on Flask.
+Nooze is built on top of `nzdb`, which handles all interfacing with the database. Nooze is a Web service based on Flask.
 
 ### Application details
 
@@ -32,7 +32,7 @@ docker build -t artgoldhammer/nooze:110319 .
 
 #### Running on cloud host
 
-Remember to use the NEWSTAG env variable to specify the correct version
+Remember to use the NZTAG env variable to specify the correct version
 of the containers.
 
 `NZTAG=<tag> docker-compose -f cloud-multi.yaml up -d`
@@ -41,27 +41,27 @@ of the containers.
 
 #### Configuration
 
-Congiuration files *must* be located in the `app/confs` directory of `noozep`.
+Congiuration files _must_ be located in the `app/confs` directory of `noozep`.
 
 Here is a sample docker-compose config file:
 
 ```yaml
-version: '3.7'
+version: "3.7"
 services:
- dbhost:
-  image: mongo:4.0.2-xenial
-  restart: always
-  container_name: dbhost
-  volumes:
-    - $HOME/backup:/warehouse
-    - $HOME/data/db:/data/db
-  ports:
-    - "27018:27017"
-  command: mongod --logpath=/dev/null
+  dbhost:
+    image: mongo:4.0.2-xenial
+    restart: always
+    container_name: dbhost
+    volumes:
+      - $HOME/backup:/warehouse
+      - $HOME/data/db:/data/db
+    ports:
+      - "27018:27017"
+    command: mongod --logpath=/dev/null
 
 usnews:
   depends_on:
-   - dbhost
+    - dbhost
   image: artgoldhammer/nooze:$NZTAG
   container_name: usnews
   restart: always

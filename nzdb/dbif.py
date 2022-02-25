@@ -336,7 +336,7 @@ vega_schema = {
     "data": {},
     "mark": "bar",
     "encoding": {
-        "x": {"field": "period"},
+        "x": {"field": "period", "axis": {"labelAngle": -30}},
         "y": {"field": "value", "type": "quantitative"},
         "xOffset": {"field": "query"},
         "color": {"field": "query"},

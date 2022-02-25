@@ -271,8 +271,9 @@ def xcount(xquery):
     db = get_db()
     try:
         searchon = _setup_mongo_query_from_xquery(xquery)
-        cursor = db.statuses.find(searchon, {"_id": True})
-        return None, len(list(cursor))
+        # cursor = db.statuses.find(searchon, {"_id": True})
+        count = db.statuses.get_count(searchon)
+        return None, count  # len(list(cursor))
     except Exception as e:
         return e, 0
 

@@ -272,7 +272,7 @@ def xcount(xquery):
     try:
         searchon = _setup_mongo_query_from_xquery(xquery)
         # cursor = db.statuses.find(searchon, {"_id": True})
-        count = db.statuses.get_count(searchon)
+        count = db.statuses.count_documents(searchon)
         return None, count  # len(list(cursor))
     except Exception as e:
         return e, 0
@@ -317,9 +317,11 @@ def xcounts(xcounts_qry):
         for intvl in intvls:
             sc = SearchContext(intvl[0], intvl[1], words, None)
             searchon = _setup_mongo_query(sc)
-            cursor = db.statuses.find(searchon, {"_id": True})
-            count = len(list(cursor))
+            # cursor = db.statuses.find(searchon, {"_id": True})
+            # count = len(list(cursor))
+            count = db.statuses.count_documents(searchon)
             counts.append(count)
+        # print(f"xcounts res: {counts}")
         return None, {"counts": counts, "intervals": intvls}
     except Exception as e:
         return e, None

@@ -40,26 +40,6 @@ class TopicNotFound(Exception):
     pass
 
 
-# db abstraction section
-
-
-# def get_status_date_range():
-#     """
-#     Return first, last status dates
-#     :return: (earliest date in db, latest date in db)
-#     :rtype: (datetime, datetime)
-#     """
-#     cursor = twitterdb.statuses.find({}, projection={"created_at": True})
-#     cursor_dn = cursor.clone()
-#     maxdate = cursor.sort("created_at", DESCENDING).limit(1)
-#     mindate = cursor_dn.sort("created_at", ASCENDING).limit(1)
-#     return mindate[0]["created_at"], maxdate[0]["created_at"]
-
-
-# def mapStatusIDtoStatus(status_id):
-#     return twitterdb.statuses.find_one({"id": status_id})
-
-
 def getAuthors():
     """
     :return: list of authors from db
@@ -211,14 +191,13 @@ def _setup_mongo_query(search_context):
     """
     start = search_context.startdate
     end = search_context.enddate
-    searchon = {"created_at": {"$gte": start, "$lte": end}}
+    searchon = {"created_at": {"$gte": start, "$lt": end}}
     # if query is None, we don't do text search but search for all in
     #   date window
     if search_context.query is not None:
         query = search_context.query
         query = expand_topic(query)
-        searchon = {
-            "created_at": {"$gte": start, "$lte": end},
+        searchon |= {
             "$text": {"$search": query, "$diacriticSensitive": False},
         }
     return searchon
@@ -231,7 +210,7 @@ def _setup_mongo_query_from_xquery(xquery):
         xquery (dict): keys words, start, end
         xquery["words"] is a list of strings
     """
-    # !NB: setup expects xquery["words"] to be an array of words
+    # ?NB: setup expects xquery["words"] to be an array of words
     words = " ".join(xquery["words"])
     startde = delorean.parse(xquery["start"], yearfirst=True, dayfirst=False).datetime
     endde = delorean.parse(xquery["end"], yearfirst=True, dayfirst=False).datetime

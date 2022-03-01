@@ -268,8 +268,6 @@ def query():
 def cats_json():
     n, cats = getShortStats()
     resp = jsonify(count=n, cats=cats)
-    resp.headers["server"] = "Nooze Server 0.2.1"
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
 
 
@@ -277,8 +275,6 @@ def cats_json():
 def count_json():
     n = getCount()
     resp = jsonify(count=n)
-    resp.headers["server"] = "Nooze Server 0.2.1"
-    resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
     return resp
 
 
@@ -293,8 +289,6 @@ def recent_json():
         # t2 = mstimer_ns()
         resp = jsonify([s for s in cursor])
         # resp.headers["Access-Control-Allow-Origin"] = "*"
-        resp.headers["server"] = "Nooze Server 0.2.1"
-        resp.headers["Access-Control-Allow-Headers"] = "Content-Type"
         t2 = mstimer()
         logger.debug(f"recent: fetch {t1 - t0},  jsonify {t2 - t1} ")
         return resp

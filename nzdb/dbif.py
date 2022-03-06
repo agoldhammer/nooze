@@ -429,6 +429,25 @@ def fetch_recent(cmdline="-H 3 dummy"):
     return esearch(search_context, DESCENDING)
 
 
+def xget_by_date(query):
+    """get by start and end dates
+    :param query: dict specifying start and end dates
+      in ISO format, e.g. "2022-02-25"
+    :return err, result:
+    """
+    db = get_db()
+    try:
+        startde = delorean.parse(
+            query["start"], yearfirst=True, dayfirst=False
+        ).datetime
+        endde = delorean.parse(query["end"], yearfirst=True, dayfirst=False).datetime
+        searchon = {"created_at": {"$gte": startde, "$lt": endde}}
+        cursor = db.statuses.find(searchon)
+        return None, cursor
+    except Exception as e:
+        return e, None
+
+
 def get_lastread():
     db = get_db()
     last = db.lastread.find_one()

@@ -211,7 +211,11 @@ def _setup_mongo_query_from_xquery(xquery):
         xquery["words"] is a list of strings
     """
     # ?NB: setup expects xquery["words"] to be an array of words
-    words = " ".join(xquery["words"])
+    words = xquery["words"]
+    if len(words) == 1 and words[0] == "":
+        words = None
+    else:
+        words = " ".join(words)
     startde = delorean.parse(xquery["start"], yearfirst=True, dayfirst=False).datetime
     endde = delorean.parse(xquery["end"], yearfirst=True, dayfirst=False).datetime
     search_context = SearchContext(startde, endde, words, None)
@@ -257,7 +261,7 @@ def xcount(xquery):
         return e, 0
 
 
-def xwebsearch(xquery, sort_dir=ASCENDING):
+def xwebsearch(xquery, sort_dir=DESCENDING):
     """do web search from json xquery
 
     Args:
